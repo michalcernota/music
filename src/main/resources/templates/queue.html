@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add CSS and JS to Thymeleaf</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<h2>Track list</h2>
+<section>
+    <div>
+        <div th:each="trackInQueue : ${queueList}">
+            <h3 th:text="${trackInQueue.name}"></h3>
+            <a th:href="@{'/queue-remove/' + ${trackInQueue.getId()}}">Odebrat</a>
+            <a th:href="@{'/checkout/' + ${trackInQueue.getId()}}">Play</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

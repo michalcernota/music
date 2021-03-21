@@ -8,10 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -143,5 +141,25 @@ class MusicApplicationTests {
 
         List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(trackType1);
         Assertions.assertThat(rockTracks.size()).isEqualTo(2);
+    }
+
+    @Test
+    void updateTest() {
+        List<Track> all = trackRepository.findAll();
+
+        if (!all.isEmpty()) {
+            Long id = all.get(0).getId();
+
+            Track byId = trackRepository.findById(id).orElse(new Track());
+            long countBeforeUpdate = trackRepository.count();
+            byId.setName(byId.getName() + " v2");
+            trackRepository.save(byId);
+            long countAfterUpdate = trackRepository.count();
+
+            Assertions.assertThat(countBeforeUpdate == countAfterUpdate);
+        }
+        else {
+            Assertions.assertThat(true);
+        }
     }
 }
