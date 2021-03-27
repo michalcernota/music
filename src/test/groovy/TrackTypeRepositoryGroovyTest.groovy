@@ -1,6 +1,8 @@
-package cz.upce.music;
+package cz.upce.music
 
+import cz.upce.music.dataFactory.Creator;
 import cz.upce.music.dataFactory.TrackTypeTestDataFactory
+import cz.upce.music.entity.TrackEnum
 import cz.upce.music.entity.TrackType
 import cz.upce.music.repository.TrackTypeRepository
 import org.assertj.core.api.Assertions
@@ -15,18 +17,19 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(TrackTypeTestDataFactory.class)
+@Import(Creator.class)
 class TrackTypeRepositoryGroovyTest {
     @Autowired
     private TrackTypeRepository trackTypeRepository;
 
     @Autowired
-    private TrackTypeTestDataFactory trackTypeTestDataFactory;
+    private Creator creator;
 
     @Test
     void saveTrackTypeTest() {
         TrackType trackType = new TrackType();
-        trackTypeTestDataFactory.saveTrackType(trackType);
+        trackType.setTrackType(TrackEnum.ROCK);
+        creator.save(trackType);
         List<TrackType> trackTypes = trackTypeRepository.findAll();
         Assertions.assertThat(trackTypes.size()).isEqualTo(1);
     }

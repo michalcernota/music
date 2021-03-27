@@ -29,6 +29,9 @@ class TrackRepositoryGroovyTest {
     private TrackTestDataFactory trackTestDataFactory;
 
     @Autowired
+    private TrackTypeTestDataFactory trackTypeTestDataFactory;
+
+    @Autowired
     private TracksQueueService tracksQueueService;
 
     @Test
