@@ -32,5 +32,11 @@ public class TrackType {
         this.trackType = trackType;
     }
 
+    public Set<Track> getTracks() {
+        return tracks;
+    }
 
+    public void setTracks(Set<Track> tracks) {
+        this.tracks = tracks;
+    }
 }

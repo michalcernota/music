@@ -1,13 +1,11 @@
-package cz.upce.music;
+package cz.upce.music
 
-import cz.upce.music.dataFactory.TrackTestDataFactory
-import cz.upce.music.dataFactory.TrackTypeTestDataFactory
+import cz.upce.music.dataFactory.Creator;
 import cz.upce.music.entity.Track
 import cz.upce.music.entity.TrackEnum
 import cz.upce.music.entity.TrackType
 import cz.upce.music.repository.TrackRepository
-import cz.upce.music.service.TracksQueueService
-import cz.upce.music.service.TracksQueueServiceImpl
+import cz.upce.music.repository.TrackTypeRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -20,56 +18,55 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import([TrackTestDataFactory.class, TrackTypeTestDataFactory.class, TracksQueueServiceImpl.class])
+@Import([Creator.class])
 class TrackRepositoryGroovyTest {
     @Autowired
     private TrackRepository trackRepository;
 
     @Autowired
-    private TrackTestDataFactory trackTestDataFactory;
-
-    @Autowired
-    private TrackTypeTestDataFactory trackTypeTestDataFactory;
-
-    @Autowired
-    private TracksQueueService tracksQueueService;
+    private Creator creator;
 
     @Test
     void saveTrackTest() {
-        Track testTrack = new Track();
+        TrackType trackType1 = new TrackType();
+        trackType1.setTrackType(TrackEnum.ROCK);
+        creator.save(trackType1);
 
-        trackTestDataFactory.saveTrack(testTrack);
+        Track testTrack = new Track();
+        testTrack.setTrackType(trackType1);
+
+        creator.save(testTrack);
         List<Track> tracks = trackRepository.findAll();
         Assertions.assertThat(tracks.size()).isEqualTo(1);
 
         Track fromDb = trackRepository.findById(testTrack.getId()).get();
-        Assertions.assertThat(fromDb.getName()).isEqualTo("Test track");
+        Assertions.assertThat(fromDb.getName()).isEqualTo("Test name");
     }
 
     @Test
     void tracksByTypeTest() {
         TrackType trackType1 = new TrackType();
         trackType1.setTrackType(TrackEnum.ROCK);
+        creator.save(trackType1);
+
         TrackType trackType2 = new TrackType();
         trackType2.setTrackType(TrackEnum.POP);
+        creator.save(trackType2);
 
-        Set<Track> tracks = new HashSet<>();
         Track one = new Track();
         one.setName("Don't stop me now");
         one.setTrackType(trackType1);
-        tracks.add(one);
+        creator.save(one);
 
         Track two = new Track();
         two.setName("It was a heat of the moment");
         two.setTrackType(trackType1);
-        tracks.add(two);
+        creator.save(two);
 
         Track three = new Track();
         three.setName("Diamonds");
         three.setTrackType(trackType2);
-        tracks.add(three);
-
-        trackTestDataFactory.saveTracks(tracks);
+        creator.save(three);
 
         List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(trackType1);
         Assertions.assertThat(rockTracks.size()).isEqualTo(2);
@@ -77,7 +74,25 @@ class TrackRepositoryGroovyTest {
 
     @Test
     void updateTest() {
-        trackTestDataFactory.saveTracks();
+        TrackType trackType1 = new TrackType();
+        trackType1.setTrackType(TrackEnum.ROCK);
+        creator.save(trackType1);
+
+        Track one = new Track();
+        one.setName("It was a heat of the moment");
+        one.setTrackType(trackType1);
+        creator.save(one);
+
+        Track two = new Track();
+        two.setName("Don´t stop me now");
+        two.setTrackType(trackType1);
+        creator.save(two);
+
+        Track three = new Track();
+        three.setName("21 Guns");
+        three.setTrackType(trackType1);
+        creator.save(three);
+
         List<Track> all = trackRepository.findAll();
 
         if (!all.isEmpty()) {

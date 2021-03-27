@@ -3,6 +3,7 @@ package cz.upce.music;
 
 import cz.upce.music.dataFactory.AlbumTestDataFactory
 import cz.upce.music.dataFactory.ArtistTestDataFactory
+import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Album
 import cz.upce.music.entity.Artist
 import cz.upce.music.repository.AlbumRepository
@@ -20,19 +21,19 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(AlbumTestDataFactory.class)
+@Import(Creator.class)
 class AlbumRepositoryGroovyTest {
     @Autowired
     private AlbumRepository albumRepository;
 
     @Autowired
-    private AlbumTestDataFactory albumTestDataFactory;
+    private Creator creator;
 
     @Test
     void saveAlbumTest() {
         Album album = new Album();
         album.setName("Meteora");
-        albumTestDataFactory.saveAlbum(album);
+        creator.save(album);
 
         List<Artist> albums = albumRepository.findAll();
         Assertions.assertThat(albums.size()).isEqualTo(1);
