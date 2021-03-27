@@ -15,7 +15,7 @@ public class Track {
     @ManyToOne(fetch = FetchType.LAZY)
     private Album album;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private TrackType trackType;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)

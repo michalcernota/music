@@ -11,7 +11,7 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Artist artist;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)

@@ -1,7 +1,10 @@
 package cz.upce.music;
 
 import cz.upce.music.entity.Track;
+import cz.upce.music.entity.TrackEnum;
+import cz.upce.music.entity.TrackType;
 import cz.upce.music.repository.TrackRepository;
+import cz.upce.music.repository.TrackTypeRepository;
 import cz.upce.music.service.TracksQueueService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,10 +22,18 @@ class TracksQueueTest {
     @Autowired
     private TracksQueueService tracksQueueService;
 
+    @Autowired
+    private TrackTypeRepository trackTypeRepository;
+
     @Test
     void addOneToQueue() {
+        TrackType trackType = new TrackType();
+        trackType.setTrackType(TrackEnum.ROCK);
+        trackTypeRepository.save(trackType);
+
         Track track = new Track();
         track.setName("Never There");
+        track.setTrackType(trackType);
         trackRepository.save(track);
         List<Track> all = trackRepository.findAll();
 
