@@ -21,7 +21,6 @@ public class Track {
     private TrackType trackType;
 
     @Lob
-    @Column(columnDefinition = "BLOB")
     private byte[] data;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)

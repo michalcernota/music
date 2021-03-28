@@ -6,12 +6,13 @@
     <link th:href="@{/main.css}" rel="stylesheet"/>
 </head>
 <body>
-<h2>Add product</h2>
+<h2>Add track</h2>
 <section>
     <div>
-        <form action="#" th:action="@{/track-form-process}" th:object="${track}" method="post">
+        <form action="#" th:action="@{/track-form-process}" th:object="${track}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
             <input type="text" th:field="*{name}" />
+            <input type="file" th:field="*{data}" />
             <input th:type="submit" />
         </form>
     </div>

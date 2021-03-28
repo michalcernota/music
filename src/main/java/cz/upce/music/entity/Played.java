@@ -15,7 +15,8 @@ public class Played {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    @Column(nullable = false)
+    //TODO: přidat not null
+    //@Column(nullable = false)
     private String username;
 
     public Long getId() {
