@@ -70,7 +70,6 @@ public class TracksQueueServiceImpl implements TracksQueueService {
 
                 Played played = new Played();
                 played.setTimestamp(LocalDateTime.now());
-                played.setWholeTrackPlayed(true);
                 played.setTrack(track);
                 playedRepository.save(played);
 

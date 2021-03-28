@@ -5,6 +5,8 @@ import java.util.Set;
 
 @Entity
 public class Track {
+    // TODO: udělat sloupec data not null (až přijdu na to jak ukládat data)
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,8 +20,15 @@ public class Track {
     @ManyToOne(fetch = FetchType.LAZY)
     private TrackType trackType;
 
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private byte[] data;
+
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<Played> played;
+
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    private Set<TrackOfPlaylist> trackOfPlaylists;
 
     @Column(length = 50)
     private String name;
@@ -70,5 +79,21 @@ public class Track {
 
     public void setPlayed(Set<Played> played) {
         this.played = played;
+    }
+
+    public Set<TrackOfPlaylist> getTrackOfPlaylists() {
+        return trackOfPlaylists;
+    }
+
+    public void setTrackOfPlaylists(Set<TrackOfPlaylist> trackOfPlaylists) {
+        this.trackOfPlaylists = trackOfPlaylists;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }

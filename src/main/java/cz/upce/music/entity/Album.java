@@ -11,13 +11,13 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Artist artist;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<Track> tracks;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column
@@ -25,12 +25,6 @@ public class Album {
 
     @Column
     private int cost;
-
-    @Column
-    private int copiesSold;
-
-    @Column
-    private String producent;
 
     @Column
     private String albumType;
@@ -81,22 +75,6 @@ public class Album {
 
     public void setCost(int cost) {
         this.cost = cost;
-    }
-
-    public int getCopiesSold() {
-        return copiesSold;
-    }
-
-    public void setCopiesSold(int copiesSold) {
-        this.copiesSold = copiesSold;
-    }
-
-    public String getProducent() {
-        return producent;
-    }
-
-    public void setProducent(String producent) {
-        this.producent = producent;
     }
 
     public String getAlbumType() {

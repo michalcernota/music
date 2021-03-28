@@ -9,16 +9,13 @@ public class Played {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Track track;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    @Column
-    private boolean wholeTrackPlayed;
-
-    @Column
+    @Column(nullable = false)
     private String username;
 
     public Long getId() {
@@ -43,14 +40,6 @@ public class Played {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public boolean isWholeTrackPlayed() {
-        return wholeTrackPlayed;
-    }
-
-    public void setWholeTrackPlayed(boolean wholeTrackPlayed) {
-        this.wholeTrackPlayed = wholeTrackPlayed;
     }
 
     public String getUsername() {
