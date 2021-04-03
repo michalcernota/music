@@ -1,6 +1,5 @@
 package cz.upce.music;
 
-import cz.upce.music.dataFactory.ArtistTestDataFactory
 import cz.upce.music.dataFactory.Creator;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;

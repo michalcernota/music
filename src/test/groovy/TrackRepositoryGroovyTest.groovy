@@ -5,7 +5,6 @@ import cz.upce.music.entity.Track
 import cz.upce.music.entity.TrackEnum
 import cz.upce.music.entity.TrackType
 import cz.upce.music.repository.TrackRepository
-import cz.upce.music.repository.TrackTypeRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
