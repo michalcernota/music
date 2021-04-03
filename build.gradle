@@ -24,6 +24,7 @@ dependencies {
     testImplementation 'org.codehaus.groovy:groovy-yaml:3.0.7'
     testCompile 'commons-beanutils:commons-beanutils:1.9.4'
     testCompile 'org.apache.commons:commons-lang3:3.12.0'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 }
 
 test {

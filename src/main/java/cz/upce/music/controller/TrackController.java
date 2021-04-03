@@ -47,7 +47,6 @@ public class TrackController {
     @PostMapping("/track-form-process")
     public String trackFormProcess(AddOrEditTrackDto addTrackDto) {
         Track track = new Track();
-        track.setId(addTrackDto.getId());
         track.setName(addTrackDto.getName());
         trackRepository.save(track);
         return "redirect:/";

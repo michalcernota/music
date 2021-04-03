@@ -27,13 +27,8 @@ class TracksQueueTest {
 
     @Test
     void addOneToQueue() {
-        TrackType trackType = new TrackType();
-        trackType.setTrackType(TrackEnum.ROCK);
-        trackTypeRepository.save(trackType);
-
         Track track = new Track();
         track.setName("Never There");
-        track.setTrackType(trackType);
         trackRepository.save(track);
         List<Track> all = trackRepository.findAll();
 

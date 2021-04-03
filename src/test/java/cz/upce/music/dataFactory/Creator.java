@@ -1,5 +1,6 @@
 package cz.upce.music.dataFactory;
 
+import cz.upce.music.entity.TrackEnum;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.logging.Log;
@@ -73,7 +74,11 @@ public class Creator {
                                 propValue = 1L;
                             } else if (Set.class.equals(fieldClass)) {
                                 propValue = new HashSet<>();
-                            } else {
+                            }
+                            else if (TrackEnum.class.equals(fieldClass)) {
+                                propValue = TrackEnum.ROCK;
+                            }
+                            else {
                                 propValue = fieldClass.newInstance();
                             }
                         }

@@ -25,13 +25,6 @@ public class TrackTestDataFactory {
     }
 
     private void saveTrackWithDefaultTrackType(Track track) {
-        if (track.getTrackType() == null) {
-            TrackType trackType = trackTypeTestDataFactory.saveTrackType();
-            track.setTrackType(trackType);
-        }
-        else {
-            trackTypeTestDataFactory.saveTrackType(track.getTrackType());
-        }
         trackRepository.save(track);
     }
 

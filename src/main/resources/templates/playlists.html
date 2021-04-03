@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add CSS and JS to Thymeleaf</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<h2>Playlists</h2>
+<section>
+    <div>
+        <div th:each="playlist : ${playlists}">
+            <h3 th:text="${playlist.name}"></h3>
+            Počet skladeb: <span th:text="${playlist.getTrackOfPlaylist().size()}"></span>
+        </div>
+    </div>
+</section>
+</body>
+</html>
