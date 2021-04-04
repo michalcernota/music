@@ -26,9 +26,6 @@ class MusicApplicationTests {
     private ArtistRepository artistRepository;
 
     @Autowired
-    private TrackTypeRepository trackTypeRepository;
-
-    @Autowired
     private AlbumRepository albumRepository;
 
     @Autowired
@@ -85,10 +82,6 @@ class MusicApplicationTests {
         artist.setName("Kiss");
         artistRepository.save(artist);
 
-        TrackType trackType = new TrackType();
-        trackType.setTrackType(TrackEnum.ROCK);
-        trackTypeRepository.save(trackType);
-
         Album album = new Album();
         album.setArtist(artist);
         album.setName("Creatures of the Night");
@@ -98,7 +91,6 @@ class MusicApplicationTests {
         track.setName("I Love it Loud");
         track.setAlbum(album);
         track.setArtist(artist);
-        track.setTrackType(trackType);
         trackRepository.save(track);
 
         Played played = new Played();
@@ -106,40 +98,29 @@ class MusicApplicationTests {
         played.setTrack(track);
         playedRepository.save(played);
 
-        List<Track> tracks = trackRepository.findAll();
-
         Assertions.assertThat(artistRepository.count()).isGreaterThan(0);
         Assertions.assertThat(albumRepository.count()).isGreaterThan(0);
-        Assertions.assertThat(trackTypeRepository.count()).isGreaterThan(0);
         Assertions.assertThat(playedRepository.count()).isGreaterThan(0);
-        Assertions.assertThat(trackTypeRepository.count()).isGreaterThan(0);
     }
 
     @Test
-    void tracksByIdTest() {
-        TrackType trackType1 = new TrackType();
-        trackType1.setTrackType(TrackEnum.ROCK);
-        TrackType trackType2 = new TrackType();
-        trackType2.setTrackType(TrackEnum.POP);
-        trackTypeRepository.save(trackType1);
-        trackTypeRepository.save(trackType2);
-
+    void tracksByTypeTest() {
         Track one = new Track();
         one.setName("Don't stop me now");
-        one.setTrackType(trackType1);
+        one.setTrackType(TrackEnum.ROCK);
         trackRepository.save(one);
 
         Track two = new Track();
         two.setName("It was a heat of the moment");
-        two.setTrackType(trackType1);
+        two.setTrackType(TrackEnum.ROCK);
         trackRepository.save(two);
 
         Track three = new Track();
         three.setName("Diamonds");
-        three.setTrackType(trackType2);
+        three.setTrackType(TrackEnum.POP);
         trackRepository.save(three);
 
-        List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(trackType1);
+        List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(TrackEnum.ROCK);
         Assertions.assertThat(rockTracks.size()).isEqualTo(2);
     }
 

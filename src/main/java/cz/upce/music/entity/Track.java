@@ -17,8 +17,9 @@ public class Track {
     @ManyToOne(fetch = FetchType.LAZY)
     private Album album;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TrackType trackType;
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private TrackEnum trackType;
 
     @Lob
     private byte[] data;
@@ -64,11 +65,11 @@ public class Track {
         this.album = album;
     }
 
-    public TrackType getTrackType() {
+    public TrackEnum getTrackType() {
         return trackType;
     }
 
-    public void setTrackType(TrackType trackType) {
+    public void setTrackType(TrackEnum trackType) {
         this.trackType = trackType;
     }
 

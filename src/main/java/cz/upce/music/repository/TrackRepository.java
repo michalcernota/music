@@ -1,7 +1,7 @@
 package cz.upce.music.repository;
 
 import cz.upce.music.entity.Track;
-import cz.upce.music.entity.TrackType;
+import cz.upce.music.entity.TrackEnum;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +15,7 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
     Track findTrackByNameContains(String contains);
 
-    List<Track> findTrackByTrackTypeIs(TrackType trackType);
+    List<Track> findTrackByTrackTypeIs(TrackEnum trackType);
 
     @EntityGraph(attributePaths = "played")
     Optional<Track> findById(Long id);
