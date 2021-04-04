@@ -19,7 +19,7 @@ public class User {
     @Column(length = 30)
     private String emailAddress;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime registrationDate;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
@@ -27,7 +27,7 @@ public class User {
 
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
-    private UserRoleEnum userRole;
+    private UserRoleEnum userRole = UserRoleEnum.User;
 
     public Long getId() {
         return id;

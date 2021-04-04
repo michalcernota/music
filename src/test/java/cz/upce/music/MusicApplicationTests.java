@@ -3,6 +3,7 @@ package cz.upce.music;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,15 @@ class MusicApplicationTests {
 
     @Autowired
     private PlayedRepository playedRepository;
+
+    @Autowired
+    private TrackOfPlaylistRepository trackOfPlaylistRepository;
+
+    @Autowired
+    private PlaylistRepository playlistRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void saveArtistTest() {
@@ -142,5 +152,34 @@ class MusicApplicationTests {
         else {
             Assertions.assertThat(true);
         }
+    }
+
+    @Test
+    public void playlistTest() {
+        User user  = new User();
+        user.setUsername("michal");
+        user.setPassword("heslo");
+        user.setRegistrationDate(LocalDateTime.now());
+
+        Playlist playlist = new Playlist();
+        playlist.setName("my playlist");
+        playlist.setUser(user);
+
+        Track track = new Track();
+        track.setName("track");
+
+        TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
+        trackOfPlaylist.setPlaylist(playlist);
+        trackOfPlaylist.setTrack(track);
+
+        userRepository.save(user);
+        trackRepository.save(track);
+        playlistRepository.save(playlist);
+        trackOfPlaylistRepository.save(trackOfPlaylist);
+
+        Assert.assertEquals(1, userRepository.findAll().size());
+        Assert.assertEquals(1, trackRepository.findAll().size());
+        Assert.assertEquals(1, playlistRepository.findAll().size());
+        Assert.assertEquals(1, trackOfPlaylistRepository.findAll().size());
     }
 }
