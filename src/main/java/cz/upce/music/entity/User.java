@@ -23,7 +23,7 @@ public class User {
     private LocalDateTime registrationDate;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
-    private Set<Playlist> playlists;
+    private Set<UsersPlaylist> usersPlaylists;
 
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
@@ -69,12 +69,12 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
-    public Set<Playlist> getPlaylists() {
-        return playlists;
+    public Set<UsersPlaylist> getUsersPlaylists() {
+        return usersPlaylists;
     }
 
-    public void setPlaylists(Set<Playlist> playlists) {
-        this.playlists = playlists;
+    public void setUsersPlaylists(Set<UsersPlaylist> usersPlaylists) {
+        this.usersPlaylists = usersPlaylists;
     }
 
     public UserRoleEnum getUserRole() {

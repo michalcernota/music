@@ -12,8 +12,8 @@ public class Playlist {
     @Column(nullable = false, length = 30)
     private String name;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    private Set<UsersPlaylist> usersPlaylists;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylist;
@@ -34,12 +34,12 @@ public class Playlist {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
+    public Set<UsersPlaylist> getUsersPlaylists() {
+        return usersPlaylists;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsersPlaylists(Set<UsersPlaylist> usersPlaylists) {
+        this.usersPlaylists = usersPlaylists;
     }
 
     public Set<TrackOfPlaylist> getTrackOfPlaylist() {

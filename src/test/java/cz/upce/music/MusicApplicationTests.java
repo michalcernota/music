@@ -41,6 +41,9 @@ class MusicApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UsersPlaylistsRepository usersPlaylistsRepository;
+
     @Test
     void saveArtistTest() {
         Artist artist = new Artist();
@@ -163,7 +166,10 @@ class MusicApplicationTests {
 
         Playlist playlist = new Playlist();
         playlist.setName("my playlist");
-        playlist.setUser(user);
+
+        UsersPlaylist usersPlaylist = new UsersPlaylist();
+        usersPlaylist.setUser(user);
+        usersPlaylist.setPlaylist(playlist);
 
         Track track = new Track();
         track.setName("track");
@@ -176,10 +182,12 @@ class MusicApplicationTests {
         trackRepository.save(track);
         playlistRepository.save(playlist);
         trackOfPlaylistRepository.save(trackOfPlaylist);
+        usersPlaylistsRepository.save(usersPlaylist);
 
         Assert.assertEquals(1, userRepository.findAll().size());
         Assert.assertEquals(1, trackRepository.findAll().size());
         Assert.assertEquals(1, playlistRepository.findAll().size());
         Assert.assertEquals(1, trackOfPlaylistRepository.findAll().size());
+        Assert.assertEquals(1, usersPlaylistsRepository.findAll().size());
     }
 }
