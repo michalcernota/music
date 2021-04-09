@@ -15,6 +15,7 @@ public class UserServiceImpl implements UserService {
         loggedUser = user;
     }
 
+    @Override
     public User getLoggedUser() {
         return loggedUser;
     }

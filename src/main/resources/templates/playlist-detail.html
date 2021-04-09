@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlisty</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<h2 th:text="${playlist.name}" />
+<section>
+    <div th:each="trackOfPlaylist : ${tracksOfPlaylist}">
+        <h3 th:text="${trackOfPlaylist.track.artist.name}"></h3>
+        <h3 th:text="${trackOfPlaylist.track.name}"></h3>
+    </div>
+</section>
+</body>
+</html>

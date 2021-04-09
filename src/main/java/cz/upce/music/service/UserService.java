@@ -6,4 +6,6 @@ public interface UserService {
 
     void setLoggedUser(User user);
 
+    User getLoggedUser();
+
 }
