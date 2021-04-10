@@ -10,7 +10,7 @@
 <section>
     <div>
         <div th:each="track : ${trackList}">
-            <h3 th:text="${track.name}"></h3>
+            <a th:href="@{/track-detail/{id} (id=${track.id})}"><h3 th:text="${track.name}"></h3></a>
             <a th:href="@{'/queue-add/' + ${track.getId()}}">Přidat do fronty</a>
         </div>
     </div>

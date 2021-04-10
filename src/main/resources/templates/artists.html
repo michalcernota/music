@@ -8,7 +8,7 @@
 
 <section>
     <div th:each="artist : ${artists}">
-        <h3 th:text="${artist.name}"></h3>
+        <a th:href="@{/artist-detail/{id} (id=${artist.id})}"><h3 th:text="${artist.name}"></h3></a>
         <a th:href="@{'/artist/' + ${artist.getId()} + '/albums'}">Alba</a>
         <a th:href="@{'/artist/' + ${artist.getId()} + '/tracks'}">Skladby</a>
     </div>

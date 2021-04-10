@@ -8,7 +8,7 @@
 
 <section>
     <div th:each="playlist : ${playlists}">
-        <h3 th:text="${playlist.name}"></h3>
+        <a th:href="@{/playlist-detail/{id} (id=${playlist.id})}"><h3 th:text="${playlist.name}"></h3></a>
     </div>
 </section>
 </body>
