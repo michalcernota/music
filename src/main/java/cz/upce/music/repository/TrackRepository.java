@@ -19,4 +19,6 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
     @EntityGraph(attributePaths = "played")
     Optional<Track> findById(Long id);
+
+    List<Track> findTracksByArtist_Id(Long id);
 }

@@ -27,7 +27,7 @@ public class Artist {
     private String nationality;
 
     @Column
-    private int MembersCount;
+    private int MembersCount = 1;
 
     public Long getId() {
         return id;

@@ -24,9 +24,6 @@ public class Album {
     private Date releaseDate;
 
     @Column
-    private int cost;
-
-    @Column
     private String albumType;
 
     public Long getId() {
@@ -67,14 +64,6 @@ public class Album {
 
     public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
     }
 
     public String getAlbumType() {

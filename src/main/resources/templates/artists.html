@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Umělci</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<section>
+    <div th:each="artist : ${artists}">
+        <h3 th:text="${artist.name}"></h3>
+        <a th:href="@{'/artist/' + ${artist.getId()} + '/albums'}">Alba</a>
+        <a th:href="@{'/artist/' + ${artist.getId()} + '/tracks'}">Skladby</a>
+    </div>
+</section>
+</body>
+</html>
