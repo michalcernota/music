@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Umělci</title>
-    <link th:href="@{/main.css}" rel="stylesheet"/>
-</head>
+<head th:replace="fragments/head ::head"></head>
+
 <body>
+
+<div th:replace="fragments/navigation ::navbar"></div>
+
 <section>
     <div th:each="artist : ${artists}">
         <h3 th:text="${artist.name}"></h3>

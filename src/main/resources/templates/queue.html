@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Add CSS and JS to Thymeleaf</title>
-    <link th:href="@{/main.css}" rel="stylesheet"/>
-</head>
+<head th:replace="fragments/head ::head"></head>
+
 <body>
+
+<div th:replace="fragments/navigation ::navbar"></div>
+
 <h2>Track list</h2>
 <section>
     <div>
