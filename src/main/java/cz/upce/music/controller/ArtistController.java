@@ -2,7 +2,6 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.AddOrEditArtistDto;
 import cz.upce.music.entity.Artist;
-import cz.upce.music.repository.AlbumRepository;
 import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.FileService;
@@ -25,9 +24,6 @@ public class ArtistController {
     private TrackRepository trackRepository;
 
     @Autowired
-    private AlbumRepository albumRepository;
-
-    @Autowired
     private FileService fileService;
 
     @GetMapping("/artists")
@@ -39,7 +35,6 @@ public class ArtistController {
     @GetMapping("/artist-detail/{id}")
     public String showArtistDetail(@PathVariable(required = false) Long id, Model model) {
         model.addAttribute("artist", artistRepository.findById(id).get());
-        model.addAttribute("artistsAlbums", albumRepository.findAllByArtist_Id(id));
         model.addAttribute("singles", trackRepository.findTracksByArtist_Id(id));
         return "artist-detail";
     }

@@ -13,7 +13,6 @@ import java.nio.file.StandardCopyOption;
 public class FileServiceImpl implements FileService {
 
     private final String defaultArtistImagePath = "default/artist.png";
-    private final String defaultAlbumImagePath = "default/album.png";
 
     @Override
     public String uploadTrack(MultipartFile track) {
@@ -44,10 +43,5 @@ public class FileServiceImpl implements FileService {
     @Override
     public String getDefaultArtistImagePath() {
         return defaultArtistImagePath;
-    }
-
-    @Override
-    public String getDefaultAlbumImagePath() {
-        return defaultAlbumImagePath;
     }
 }

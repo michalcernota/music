@@ -6,5 +6,4 @@ public interface FileService {
     String uploadTrack(MultipartFile track);
     String uploadImage(MultipartFile track);
     String getDefaultArtistImagePath();
-    String getDefaultAlbumImagePath();
 }

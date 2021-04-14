@@ -1,13 +1,10 @@
 package cz.upce.music.service;
 
-import cz.upce.music.entity.Played;
 import cz.upce.music.entity.Track;
-import cz.upce.music.repository.PlayedRepository;
 import cz.upce.music.repository.TrackRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,11 +16,9 @@ public class TracksQueueServiceImpl implements TracksQueueService {
     private List<Track> queue;
 
     private final TrackRepository trackRepository;
-    private final PlayedRepository playedRepository;
 
-    public TracksQueueServiceImpl(TrackRepository trackRepository, PlayedRepository playedRepository) {
+    public TracksQueueServiceImpl(TrackRepository trackRepository) {
         this.trackRepository = trackRepository;
-        this.playedRepository = playedRepository;
         queue = new ArrayList<>();
     }
 
@@ -63,17 +58,6 @@ public class TracksQueueServiceImpl implements TracksQueueService {
                     index = i;
                     break;
                 }
-            }
-
-            if (index != -1) {
-                Track track = queue.get(index);
-
-                Played played = new Played();
-                played.setTimestamp(LocalDateTime.now());
-                played.setTrack(track);
-                playedRepository.save(played);
-
-                queue.remove(index);
             }
         }
     }

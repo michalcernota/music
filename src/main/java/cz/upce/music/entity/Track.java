@@ -14,18 +14,12 @@ public class Track {
     @ManyToOne(fetch = FetchType.LAZY)
     private Artist artist;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Album album;
-
     @Column(length = 20)
     @Enumerated(EnumType.STRING)
     private TrackEnum trackType;
 
     @Column(nullable = false)
     private String pathToTrack;
-
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
-    private Set<Played> played;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylists;
@@ -57,28 +51,12 @@ public class Track {
         this.artist = artist;
     }
 
-    public Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
-
     public TrackEnum getTrackType() {
         return trackType;
     }
 
     public void setTrackType(TrackEnum trackType) {
         this.trackType = trackType;
-    }
-
-    public Set<Played> getPlayed() {
-        return played;
-    }
-
-    public void setPlayed(Set<Played> played) {
-        this.played = played;
     }
 
     public Set<TrackOfPlaylist> getTrackOfPlaylists() {

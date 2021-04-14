@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
     Artist findArtistByNameIs(String name);
 
-    @EntityGraph(attributePaths = {"albums","tracks"})
+    @EntityGraph(attributePaths = {"tracks"})
     Optional<Artist> findById(Long id);
 }

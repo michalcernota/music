@@ -12,9 +12,6 @@ public class Artist {
     private Long id;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
-    private Set<Album> albums;
-
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<Track> tracks;
 
     @Column(nullable = false, length = 100)
@@ -46,14 +43,6 @@ public class Artist {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<Album> getAlbums() {
-        return albums;
-    }
-
-    public void setAlbums(Set<Album> albums) {
-        this.albums = albums;
     }
 
     public Set<Track> getTracks() {

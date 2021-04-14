@@ -27,12 +27,6 @@ class MusicApplicationTests {
     private ArtistRepository artistRepository;
 
     @Autowired
-    private AlbumRepository albumRepository;
-
-    @Autowired
-    private PlayedRepository playedRepository;
-
-    @Autowired
     private TrackOfPlaylistRepository trackOfPlaylistRepository;
 
     @Autowired
@@ -95,25 +89,13 @@ class MusicApplicationTests {
         artist.setName("Kiss");
         artistRepository.save(artist);
 
-        Album album = new Album();
-        album.setArtist(artist);
-        album.setName("Creatures of the Night");
-        albumRepository.save(album);
-
         Track track = new Track();
         track.setName("I Love it Loud");
-        track.setAlbum(album);
         track.setArtist(artist);
+        track.setPathToTrack("");
         trackRepository.save(track);
 
-        Played played = new Played();
-        played.setTimestamp(LocalDateTime.now());
-        played.setTrack(track);
-        playedRepository.save(played);
-
         Assertions.assertThat(artistRepository.count()).isGreaterThan(0);
-        Assertions.assertThat(albumRepository.count()).isGreaterThan(0);
-        Assertions.assertThat(playedRepository.count()).isGreaterThan(0);
     }
 
     @Test
@@ -121,16 +103,19 @@ class MusicApplicationTests {
         Track one = new Track();
         one.setName("Don't stop me now");
         one.setTrackType(TrackEnum.ROCK);
+        one.setPathToTrack("");
         trackRepository.save(one);
 
         Track two = new Track();
         two.setName("It was a heat of the moment");
         two.setTrackType(TrackEnum.ROCK);
+        two.setPathToTrack("");
         trackRepository.save(two);
 
         Track three = new Track();
         three.setName("Diamonds");
         three.setTrackType(TrackEnum.POP);
+        three.setPathToTrack("");
         trackRepository.save(three);
 
         List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(TrackEnum.ROCK);
@@ -173,6 +158,7 @@ class MusicApplicationTests {
 
         Track track = new Track();
         track.setName("track");
+        track.setPathToTrack("");
 
         TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
         trackOfPlaylist.setPlaylist(playlist);
