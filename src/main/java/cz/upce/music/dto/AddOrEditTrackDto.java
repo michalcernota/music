@@ -8,7 +8,7 @@ public class AddOrEditTrackDto {
 
     private String name;
 
-    private MultipartFile data;
+    private MultipartFile track;
 
     public Long getId() {
         return id;
@@ -26,11 +26,11 @@ public class AddOrEditTrackDto {
         this.name = name;
     }
 
-    public MultipartFile getData() {
-        return data;
+    public MultipartFile getTrack() {
+        return track;
     }
 
-    public void setData(MultipartFile data) {
-        this.data = data;
+    public void setTrack(MultipartFile track) {
+        this.track = track;
     }
 }

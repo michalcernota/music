@@ -21,8 +21,8 @@ public class Track {
     @Enumerated(EnumType.STRING)
     private TrackEnum trackType;
 
-    @Lob
-    private byte[] data;
+    @Column(nullable = false)
+    private String pathToTrack;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<Played> played;
@@ -30,7 +30,7 @@ public class Track {
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylists;
 
-    @Column(length = 50)
+    @Column(nullable = true, length = 50)
     private String name;
 
     public String getName() {
@@ -89,11 +89,11 @@ public class Track {
         this.trackOfPlaylists = trackOfPlaylists;
     }
 
-    public byte[] getData() {
-        return data;
+    public String getPathToTrack() {
+        return pathToTrack;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setPathToTrack(String pathToTrack) {
+        this.pathToTrack = pathToTrack;
     }
 }

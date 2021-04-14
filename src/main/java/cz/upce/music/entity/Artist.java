@@ -29,6 +29,9 @@ public class Artist {
     @Column
     private int MembersCount = 1;
 
+    @Column
+    private String pathToImage;
+
     public Long getId() {
         return id;
     }
@@ -83,5 +86,13 @@ public class Artist {
 
     public void setMembersCount(int membersCount) {
         MembersCount = membersCount;
+    }
+
+    public String getPathToImage() {
+        return pathToImage;
+    }
+
+    public void setPathToImage(String pathToImage) {
+        this.pathToImage = pathToImage;
     }
 }

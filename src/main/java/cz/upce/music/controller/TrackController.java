@@ -3,17 +3,19 @@ package cz.upce.music.controller;
 import cz.upce.music.dto.AddOrEditTrackDto;
 import cz.upce.music.entity.Track;
 import cz.upce.music.repository.TrackRepository;
+import cz.upce.music.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @Controller
 public class TrackController {
     @Autowired
     private TrackRepository trackRepository;
+
+    @Autowired
+    private FileService fileService;
 
     @ExceptionHandler(RuntimeException.class)
     public String handlerException() {
@@ -36,7 +38,12 @@ public class TrackController {
     public String showTrackForm(@PathVariable(required = false) Long id, Model model) {
         if (id != null) {
             Track byId = trackRepository.findById(id).orElse(new Track());
-            model.addAttribute("track", byId);
+
+            AddOrEditTrackDto dto = new AddOrEditTrackDto();
+            dto.setId(byId.getId());
+            dto.setName(byId.getName());
+
+            model.addAttribute("track", dto);
         } else {
             model.addAttribute("track", new AddOrEditTrackDto());
         }
@@ -48,11 +55,9 @@ public class TrackController {
         Track track = new Track();
         track.setId(addTrackDto.getId());
         track.setName(addTrackDto.getName());
-        try {
-            track.setData(addTrackDto.getData().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        String trackPath = fileService.uploadTrack(addTrackDto.getTrack());
+        track.setPathToTrack(trackPath);
 
         trackRepository.save(track);
         return "redirect:/";

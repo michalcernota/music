@@ -5,6 +5,7 @@ import cz.upce.music.entity.Artist;
 import cz.upce.music.repository.AlbumRepository;
 import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackRepository;
+import cz.upce.music.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ public class ArtistController {
     @Autowired
     private AlbumRepository albumRepository;
 
+    @Autowired
+    private FileService fileService;
+
     @GetMapping("/artists")
     public String showAllArtists(Model model) {
         model.addAttribute("artists", artistRepository.findAll());
@@ -44,7 +48,13 @@ public class ArtistController {
     public String showArtistForm(@PathVariable(required = false) Long id, Model model) {
         if (id != null) {
             Artist byId = artistRepository.findById(id).orElse(new Artist());
-            model.addAttribute("artist", byId);
+
+            AddOrEditArtistDto dto = new AddOrEditArtistDto();
+            dto.setMembersCount(byId.getMembersCount());
+            dto.setNationality(byId.getNationality());
+            dto.setName(byId.getName());
+
+            model.addAttribute("artist", dto);
         } else {
             model.addAttribute("artist", new AddOrEditArtistDto());
         }
@@ -64,6 +74,13 @@ public class ArtistController {
         }
         artist.setNationality(addArtistDto.getNationality());
         artist.setMembersCount(addArtistDto.getMembersCount());
+        String imagePath = fileService.uploadImage(addArtistDto.getImage());
+        if (imagePath.isEmpty() == false) {
+            artist.setPathToImage(imagePath);
+        }
+        else {
+            artist.setPathToImage(fileService.getDefaultArtistImagePath());
+        }
 
         artistRepository.save(artist);
         return "redirect:/artists";

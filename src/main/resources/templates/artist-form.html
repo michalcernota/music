@@ -9,10 +9,12 @@
 <h2>Add artist</h2>
 <section>
     <div>
-        <form action="#" th:action="@{/artist-form-process}" th:object="${artist}" method="post">
+        <form action="#" th:action="@{/artist-form-process}" th:object="${artist}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
             <label for="name">Name</label>
             <input type="text" id="name" th:field="*{name}" />
+            <label for="image">Image</label>
+            <input type="file" id="image" th:field="*{image}" />
             <label for="nationality">Nationality</label>
             <input type="text" id="nationality" th:field="*{nationality}" />
             <label for="members-count">Members count</label>
