@@ -6,13 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @EntityGraph(attributePaths = "playlists")
+    @EntityGraph(attributePaths = "usersPlaylists")
     User findUserByUsername(String username);
 
-    @EntityGraph(attributePaths = "playlists")
+    @EntityGraph(attributePaths = "usersPlaylists")
+    User findByUsername(String username);
+
+    @EntityGraph(attributePaths = "usersPlaylists")
     User findUserByEmailAddress(String emailAddress);
 
-    @EntityGraph(attributePaths = "playlists")
+    @EntityGraph(attributePaths = "usersPlaylists")
     @Query("SELECT u from User u where u.username = ?1 or u.emailAddress = ?2")
     User findUserByUsernameOrEmailAddress(String username, String emailAddress);
 }

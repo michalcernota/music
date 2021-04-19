@@ -54,7 +54,7 @@ public class UserController {
             user.setEmailAddress(signUpUserDto.getEmail());
             user.setRegistrationDate(LocalDateTime.now());
 
-            userRepository.save(user);
+            userService.saveUser(user);
         }
         else {
             // TODO: udělat nějak chybovou hlášku, když uživatel už existuje

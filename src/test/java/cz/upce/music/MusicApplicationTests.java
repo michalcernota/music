@@ -2,6 +2,7 @@ package cz.upce.music;
 
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
+import cz.upce.music.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -175,5 +177,23 @@ class MusicApplicationTests {
         Assert.assertEquals(1, playlistRepository.findAll().size());
         Assert.assertEquals(1, trackOfPlaylistRepository.findAll().size());
         Assert.assertEquals(1, usersPlaylistsRepository.findAll().size());
+    }
+
+    @Test
+    public void passwordEncryptionDecryptionTest() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword(bCryptPasswordEncoder.encode("password"));
+
+        userRepository.save(user);
+
+        String anotherPassword = "password";
+        String anotherPasswordEncoded = bCryptPasswordEncoder.encode(anotherPassword);
+
+        boolean matches = bCryptPasswordEncoder.matches(userRepository.findUserByUsername("user").getPassword(), anotherPasswordEncoded);
+
+        Assertions.assertThat(matches);
     }
 }

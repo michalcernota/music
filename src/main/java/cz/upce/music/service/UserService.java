@@ -8,4 +8,5 @@ public interface UserService {
 
     User getLoggedUser();
 
+    void saveUser(User user);
 }
