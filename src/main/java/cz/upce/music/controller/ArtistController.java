@@ -97,4 +97,10 @@ public class ArtistController {
         model.addAttribute("track", addOrEditTrackDto);
         return "track-form";
     }
+
+    @GetMapping("/artist/{artistId}/remove-track/{trackId}")
+    public String removeTrackOfArtist(@PathVariable Long artistId, @PathVariable Long trackId, Model model) {
+        trackRepository.deleteById(trackId);
+        return "redirect:/artist-detail/" + artistId;
+    }
 }

@@ -74,4 +74,10 @@ public class TrackController {
 
         return "redirect:/";
     }
+
+    @GetMapping("/remove-track/{id}")
+    public String removeTrack(@PathVariable Long id, Model model) {
+        trackRepository.deleteById(id);
+        return "redirect:/";
+    }
 }

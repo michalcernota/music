@@ -13,9 +13,10 @@
     <h3>Skladby</h3>
     <div th:each="single : ${singles}">
         <h4 th:text="${single.name}"></h4>
+        <a th:href="@{/artist/{artistId}/remove-track/{trackId} (artistId=${artist.id}, trackId=${single.id})}">Odebrat</h3></a>
     </div>
 
-    <a th:href="@{'/artist/' + ${artist.getId()} + '/add-tracks'}">Přidat skladby</a>
+    <a th:href="@{'/artist/' + ${artist.id} + '/add-tracks'}">Přidat skladby</a>
 </section>
 </body>
 </html>

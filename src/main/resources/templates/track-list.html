@@ -12,6 +12,7 @@
         <div th:each="track : ${trackList}">
             <a th:href="@{/track-detail/{id} (id=${track.id})}"><h3 th:text="${track.name}"></h3></a>
             <a th:href="@{'/queue-add/' + ${track.getId()}}">Přidat do fronty</a>
+            <a th:href="@{/remove-track/{trackId} (trackId=${track.id})}">Odebrat</h3></a>
         </div>
     </div>
 </section>
