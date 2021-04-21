@@ -2,6 +2,7 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.AddOrEditArtistDto;
 import cz.upce.music.entity.Artist;
+import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.FileService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Set;
 
 @Controller
 public class ArtistController {
@@ -79,5 +81,10 @@ public class ArtistController {
 
         artistRepository.save(artist);
         return "redirect:/artists";
+    }
+
+    @GetMapping("/artist/{id}/tracks")
+    public String getTracksOfArtist(@PathVariable Long id, Model model) {
+        return "redirect:/artist-detail/" + id;
     }
 }
