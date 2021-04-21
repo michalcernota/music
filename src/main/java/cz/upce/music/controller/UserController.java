@@ -34,7 +34,7 @@ public class UserController {
         User user = userRepository.findUserByUsername(loginUserDto.getUserName());
         if (user != null) {
             if (user.getPassword().equals(loginUserDto.getPassword())) {
-                userService.setLoggedUser(user);
+                //userService.setLoggedUser(user);
             }
         }
         else {
@@ -46,7 +46,7 @@ public class UserController {
 
     @PostMapping("/signup-form-process")
     public String processSignupUser(SignUpUserDto signUpUserDto) {
-        if (userRepository.findUserByUsernameOrEmailAddress(signUpUserDto.getUserName(), signUpUserDto.getEmail()) == null) {
+        if (userRepository.findUserByUsername(signUpUserDto.getUserName()) == null) {
             User user = new User();
             user.setUsername(signUpUserDto.getUserName());
             user.setPassword(signUpUserDto.getPassword());
