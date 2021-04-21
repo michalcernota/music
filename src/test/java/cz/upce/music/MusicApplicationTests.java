@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -196,4 +197,39 @@ class MusicApplicationTests {
 
         Assertions.assertThat(matches);
     }
+
+    @Test
+    public void tracksNotInPlaylistTest() {
+        Track trackOne = new Track();
+        trackOne.setPathToTrack("");
+        trackOne.setName("track one");
+
+        Track trackTwo = new Track();
+        trackTwo.setPathToTrack("");
+        trackTwo.setName("track two");
+
+        Track trackThree = new Track();
+        trackThree.setPathToTrack("");
+        trackThree.setName("track three");
+
+        trackRepository.save(trackOne);
+        trackRepository.save(trackTwo);
+        trackRepository.save(trackThree);
+
+        Playlist playlist = new Playlist();
+        playlist.setName("playlist");
+        playlistRepository.save(playlist);
+
+        TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
+        trackOfPlaylist.setTrack(trackOne);
+        trackOfPlaylist.setPlaylist(playlist);
+        trackOfPlaylistRepository.save(trackOfPlaylist);
+
+        Set<Long> ids = trackOfPlaylistRepository.getAllTrackIds();
+        Assertions.assertThat(ids.size() == 1);
+
+        List<Track> tracksNotInPlaylist = trackRepository.findTracksByIdIsNotIn(ids);
+        Assertions.assertThat(tracksNotInPlaylist.size() == 2);
+    }
+
 }

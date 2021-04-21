@@ -52,6 +52,17 @@ public class PlaylistController {
             model.addAttribute("tracksOfPlaylist", trackOfPlaylists);
         }
         model.addAttribute("playlist", playlist);
+
+        Set<Long> ids = trackOfPlaylistRepository.getAllTrackIds();
+        List<Track> tracksNotInPlaylist = trackRepository.findTracksByIdIsNotIn(ids);
+        //TODO: rework - this does not work if size of ids is 0
+        if(ids.size() == 0) {
+            model.addAttribute("tracksNotInPlaylist", trackRepository.findAll());
+        }
+        else {
+            model.addAttribute("tracksNotInPlaylist", tracksNotInPlaylist);
+        }
+
         return "playlist-detail";
     }
 
@@ -96,7 +107,7 @@ public class PlaylistController {
         model.addAttribute("tracksOfPlaylist", trackOfPlaylists);
 
         model.addAttribute("playlist", playlist);
-        return "redirect:/playlist-detail";
+        return "redirect:/playlist-detail/" + playlistId;
     }
 
     @GetMapping("/playlists/{playlistId}/remove/{trackId}")
@@ -108,6 +119,6 @@ public class PlaylistController {
         model.addAttribute("tracksOfPlaylist", trackOfPlaylists);
         model.addAttribute("playlist", playlist);
 
-        return "redirect:/playlist-detail";
+        return "redirect:/playlist-detail/" + playlistId;
     }
 }
