@@ -10,6 +10,8 @@ public class AddOrEditTrackDto {
 
     private MultipartFile track;
 
+    private Long artistId;
+
     public Long getId() {
         return id;
     }
@@ -32,5 +34,13 @@ public class AddOrEditTrackDto {
 
     public void setTrack(MultipartFile track) {
         this.track = track;
+    }
+
+    public Long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(Long artistId) {
+        this.artistId = artistId;
     }
 }

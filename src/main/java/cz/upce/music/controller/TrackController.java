@@ -1,7 +1,9 @@
 package cz.upce.music.controller;
 
 import cz.upce.music.dto.AddOrEditTrackDto;
+import cz.upce.music.entity.Artist;
 import cz.upce.music.entity.Track;
+import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class TrackController {
     @Autowired
     private TrackRepository trackRepository;
+
+    @Autowired
+    private ArtistRepository artistRepository;
 
     @Autowired
     private FileService fileService;
@@ -55,11 +60,18 @@ public class TrackController {
         Track track = new Track();
         track.setId(addTrackDto.getId());
         track.setName(addTrackDto.getName());
-
         String trackPath = fileService.uploadTrack(addTrackDto.getTrack());
         track.setPathToTrack(trackPath);
 
         trackRepository.save(track);
+
+        if (addTrackDto.getArtistId() != null) {
+            Artist artist = artistRepository.findById(addTrackDto.getArtistId()).get();
+            artist.getTracks().add(track);
+            track.setArtist(artist);
+            artistRepository.save(artist);
+        }
+
         return "redirect:/";
     }
 }

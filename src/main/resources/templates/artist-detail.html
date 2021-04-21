@@ -14,6 +14,8 @@
     <div th:each="single : ${singles}">
         <h4 th:text="${single.name}"></h4>
     </div>
+
+    <a th:href="@{'/artist/' + ${artist.getId()} + '/add-tracks'}">Přidat skladby</a>
 </section>
 </body>
 </html>

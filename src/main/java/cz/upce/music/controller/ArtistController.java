@@ -1,6 +1,7 @@
 package cz.upce.music.controller;
 
 import cz.upce.music.dto.AddOrEditArtistDto;
+import cz.upce.music.dto.AddOrEditTrackDto;
 import cz.upce.music.entity.Artist;
 import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
@@ -86,5 +87,14 @@ public class ArtistController {
     @GetMapping("/artist/{id}/tracks")
     public String getTracksOfArtist(@PathVariable Long id, Model model) {
         return "redirect:/artist-detail/" + id;
+    }
+
+    @GetMapping("/artist/{id}/add-tracks")
+    public String addTracksToArtist(@PathVariable Long id, Model model) {
+        AddOrEditTrackDto addOrEditTrackDto = new AddOrEditTrackDto();
+        addOrEditTrackDto.setArtistId((id));
+
+        model.addAttribute("track", addOrEditTrackDto);
+        return "track-form";
     }
 }
