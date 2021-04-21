@@ -44,7 +44,7 @@ public class PlaylistController {
         return "playlists";
     }
 
-    @GetMapping("/playlists/{id}")
+    @GetMapping(value= {"/playlists/{id}", "/playlist-detail/{id}"})
     public String showPlaylistDetail(@PathVariable Long id, Model model) {
         Playlist playlist = playlistRepository.findById(id).get();
         if (playlist != null) {
