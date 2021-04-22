@@ -9,6 +9,7 @@
 <section>
     <div th:each="playlist : ${playlists}">
         <a th:href="@{/playlist-detail/{id} (id=${playlist.id})}"><h3 th:text="${playlist.name}"></h3></a>
+        <a th:href="@{/playlist-detail/{id}/add-to-my-playlists (id=${playlist.id})}">Add to my playlists</a>
     </div>
 </section>
 </body>

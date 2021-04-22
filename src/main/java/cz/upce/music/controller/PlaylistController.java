@@ -3,8 +3,10 @@ package cz.upce.music.controller;
 import cz.upce.music.dto.AddOrEditPlaylistDto;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
+import cz.upce.music.service.CustomUserDetails;
 import cz.upce.music.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,5 +122,42 @@ public class PlaylistController {
         model.addAttribute("playlist", playlist);
 
         return "redirect:/playlist-detail/" + playlistId;
+    }
+
+    @GetMapping("/playlist-detail/{id}/add-to-my-playlists")
+    public String addPlaylistsToMyPlaylists(@PathVariable Long id, Model model) {
+
+        User user = userService.getLoggedUser();
+        if (user != null) {
+            Playlist playlist = playlistRepository.findById(id).get();
+
+            UsersPlaylist usersPlaylist = new UsersPlaylist();
+            usersPlaylist.setUser(user);
+            usersPlaylist.setPlaylist(playlist);
+            usersPlaylistsRepository.save(usersPlaylist);
+        }
+
+        return "redirect:/playlists";
+    }
+
+    @GetMapping("/users-playlists")
+    public String getMyPlaylists(Model model) {
+
+        User user = userService.getLoggedUser();
+        if(user != null) {
+            List<UsersPlaylist> usersPlaylists = usersPlaylistsRepository.findAllByUser_Id(user.getId());
+            model.addAttribute("usersPlaylists", usersPlaylists);
+
+            return "users-playlists";
+        }
+
+        return "redirect:/playlists";
+    }
+
+    @GetMapping("/users-playlists/{id}/remove")
+    public String removeFromMyPlaylists(@PathVariable Long id, Model mode) {
+        usersPlaylistsRepository.deleteById(id);
+
+        return "redirect:/users-playlists";
     }
 }
