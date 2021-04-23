@@ -15,6 +15,9 @@ public class UsersPlaylist {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Playlist playlist;
 
+    @Column(nullable = false)
+    private boolean isOwner;
+
     public Long getId() {
         return id;
     }
@@ -37,5 +40,13 @@ public class UsersPlaylist {
 
     public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
+    }
+
+    public boolean isIsOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(boolean owner) {
+        this.isOwner = owner;
     }
 }

@@ -232,4 +232,34 @@ class MusicApplicationTests {
         Assertions.assertThat(tracksNotInPlaylist.size() == 2);
     }
 
+    @Test
+    public void getOwnerOfPlaylistTest() {
+        User user = new User();
+        user.setUsername("test");
+        user.setPassword("test");
+
+        Playlist playlist = new Playlist();
+        playlist.setName("playlist");
+
+        UsersPlaylist usersPlaylist = new UsersPlaylist();
+        usersPlaylist.setPlaylist(playlist);
+        usersPlaylist.setUser(user);
+
+        userRepository.save(user);
+        playlistRepository.save(playlist);
+        usersPlaylistsRepository.save(usersPlaylist);
+
+        Assertions.assertThat(usersPlaylistsRepository.findAll().size() == 1);
+        Assertions.assertThat(usersPlaylistsRepository.findAllByUser_IdAndIsOwnerIsTrue(user.getId()).size() == 0);
+
+        UsersPlaylist ownersPlaylist = new UsersPlaylist();
+        ownersPlaylist.setPlaylist(playlist);
+        ownersPlaylist.setUser(user);
+        ownersPlaylist.setIsOwner(true);
+        usersPlaylistsRepository.save(ownersPlaylist);
+
+        Assertions.assertThat(usersPlaylistsRepository.findAllByUser_IdAndIsOwnerIsTrue(user.getId()).size() == 1);
+        Assertions.assertThat(usersPlaylistsRepository.findAllByUser_Id(user.getId()).size() == 2);
+    }
+
 }
