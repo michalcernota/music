@@ -15,4 +15,6 @@ public interface TrackOfPlaylistRepository extends JpaRepository<TrackOfPlaylist
 
     @Query("select t.track.id from TrackOfPlaylist t")
     Set<Long> getAllTrackIds();
+
+    void deleteTrackOfPlaylistsByTrack_Id(Long id);
 }

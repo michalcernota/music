@@ -6,11 +6,20 @@
 
 <div th:replace="fragments/navigation ::navbar"></div>
 
+<h2>Artists</h2>
 <section>
     <div th:each="artist : ${artists}">
         <a th:href="@{/artist-detail/{id} (id=${artist.id})}"><h3 th:text="${artist.name}"></h3></a>
         <img th:src="@{/images/{path} (path=${artist.pathToImage})}" >
         <a th:href="@{'/artist/' + ${artist.getId()} + '/tracks'}">Skladby</a>
+        <div th:if="${loggedUser != null && loggedUser.userRole.getDisplayValue() == 'ADMIN'}">
+            <a th:href="@{'/artists/remove/' + ${artist.getId()}}">Odebrat</a>
+            <a th:href="@{'/artist-form/' + ${artist.getId()}}">Upravit</a>
+        </div>
+    </div>
+
+    <div th:if="${loggedUser != null && loggedUser.userRole.getDisplayValue() == 'ADMIN'}">
+        <a th:href="@{'/artist-form'}">Přidat</a>
     </div>
 </section>
 </body>

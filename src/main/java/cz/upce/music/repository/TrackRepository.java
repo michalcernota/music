@@ -25,4 +25,6 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     @EntityGraph(attributePaths = "artist")
     @Query("select t from Track t where t.id not in ?1")
     List<Track> findTracksByIdIsNotIn(Collection<Long> ids);
+
+    void deleteTracksByArtist_Id(Long id);
 }

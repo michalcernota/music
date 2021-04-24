@@ -262,4 +262,25 @@ class MusicApplicationTests {
         Assertions.assertThat(usersPlaylistsRepository.findAllByUser_Id(user.getId()).size() == 2);
     }
 
+    @Test
+    public void deleteArtistTest() {
+        Artist artist = new Artist();
+        artist.setName("artist");
+
+        Track track = new Track();
+        track.setName("track");
+        track.setPathToTrack("");
+        track.setArtist(artist);
+
+        artistRepository.save(artist);
+        trackRepository.save(track);
+
+        trackRepository.deleteTracksByArtist_Id(artist.getId());
+        artistRepository.delete(artist);
+
+        Assertions.assertThatNoException();
+        Assertions.assertThat(artistRepository.count() == 0);
+        Assertions.assertThat(trackRepository.count() == 0);
+    }
+
 }

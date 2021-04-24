@@ -4,8 +4,10 @@ import cz.upce.music.dto.AddOrEditTrackDto;
 import cz.upce.music.entity.Artist;
 import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
+import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.FileService;
+import cz.upce.music.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +22,13 @@ public class TrackController {
     private ArtistRepository artistRepository;
 
     @Autowired
+    private TrackOfPlaylistRepository trackOfPlaylistRepository;
+
+    @Autowired
     private FileService fileService;
+
+    @Autowired
+    private UserService userService;
 
     @ExceptionHandler(RuntimeException.class)
     public String handlerException() {
@@ -30,6 +38,7 @@ public class TrackController {
     @GetMapping("/")
     public String showAllTracks(Model model) {
         model.addAttribute("trackList", trackRepository.findAll());
+        model.addAttribute("loggedUser", userService.getLoggedUser());
         return "track-list";
     }
 
@@ -77,6 +86,7 @@ public class TrackController {
 
     @GetMapping("/remove-track/{id}")
     public String removeTrack(@PathVariable Long id, Model model) {
+        trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
         trackRepository.deleteById(id);
         return "redirect:/";
     }

@@ -11,12 +11,14 @@
     <h4 th:text="${artist.nationality}"></h4>
 
     <h3>Skladby</h3>
-    <div th:each="single : ${singles}">
-        <h4 th:text="${single.name}"></h4>
-        <a th:href="@{/artist/{artistId}/remove-track/{trackId} (artistId=${artist.id}, trackId=${single.id})}">Odebrat</h3></a>
+    <div th:each="track : ${artistsTracks}">
+        <h4 th:text="${track.name}"></h4>
+        <a th:if="${loggedUser != null && loggedUser.userRole.getDisplayValue() == 'ADMIN'}" th:href="@{/artist/{artistId}/remove-track/{trackId} (artistId=${artist.id}, trackId=${track.id})}">Odebrat</h3></a>
     </div>
 
-    <a th:href="@{'/artist/' + ${artist.id} + '/add-tracks'}">Přidat skladby</a>
+    <div th:if="${loggedUser != null && loggedUser.userRole.getDisplayValue() == 'ADMIN'}">
+        <a th:href="@{'/artist/' + ${artist.id} + '/add-tracks'}">Přidat skladby</a>
+    </div>
 </section>
 </body>
 </html>

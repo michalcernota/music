@@ -5,8 +5,6 @@ import java.util.Set;
 
 @Entity
 public class Track {
-    // TODO: udělat sloupec data not null (až přijdu na to jak ukládat data)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +22,7 @@ public class Track {
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylists;
 
-    @Column(nullable = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     public String getName() {

@@ -2,18 +2,18 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.AddOrEditPlaylistDto;
 import cz.upce.music.entity.*;
-import cz.upce.music.repository.*;
-import cz.upce.music.service.CustomUserDetails;
+import cz.upce.music.repository.PlaylistRepository;
+import cz.upce.music.repository.TrackOfPlaylistRepository;
+import cz.upce.music.repository.TrackRepository;
+import cz.upce.music.repository.UsersPlaylistsRepository;
 import cz.upce.music.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,12 +37,8 @@ public class PlaylistController {
 
     @GetMapping("/playlists")
     public String showAllPlaylists(Model model) {
-        List<Playlist> playlists = playlistRepository.findAll();
-        List<Integer> numberOfTracksOfPlaylist = new ArrayList<Integer>();
-        for (int i = 0; i < playlists.size(); i++) {
-            numberOfTracksOfPlaylist.add(trackOfPlaylistRepository.countAllByPlaylistId(playlists.get(i).getId()));
-        }
         model.addAttribute("playlists", playlistRepository.findAll());
+        model.addAttribute("loggedUser", userService.getLoggedUser());
         return "playlists";
     }
 
