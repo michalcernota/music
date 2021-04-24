@@ -61,6 +61,9 @@ public class PlaylistController {
             model.addAttribute("tracksNotInPlaylist", tracksNotInPlaylist);
         }
 
+        boolean ownedByLoggedUser = userService.getLoggedUser().equals(playlist.getOwner());
+        model.addAttribute("ownedByLoggedUser", ownedByLoggedUser);
+
         return "playlist-detail";
     }
 
@@ -80,6 +83,7 @@ public class PlaylistController {
         Playlist playlist = new Playlist();
         playlist.setId(addOrEditPlaylistDto.getId());
         playlist.setName(addOrEditPlaylistDto.getName());
+        playlist.setOwner(userService.getLoggedUser());
 
         UsersPlaylist usersPlaylist = new UsersPlaylist();
         usersPlaylist.setPlaylist(playlist);

@@ -14,9 +14,8 @@
         <a th:href="@{/playlist-detail/{id}/add-to-my-playlists (id=${playlist.id})}">Add to my playlists</a>
     </div>
 
-    <div th:if="${loggedUser != null && loggedUser.userRole.getDisplayValue() == 'ADMIN'}">
-        <a th:href="@{'/playlist-form'}">Create new playlist</a>
-    </div>
+    <a th:href="@{'/playlist-form'}">Create new playlist</a>
+
 </section>
 </body>
 </html>

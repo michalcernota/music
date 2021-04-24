@@ -29,6 +29,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRoleEnum userRole = UserRoleEnum.User;
 
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private Set<Playlist> playlistsOwnedByUser;
+
     public Long getId() {
         return id;
     }
@@ -83,5 +86,13 @@ public class User {
 
     public void setUserRole(UserRoleEnum userRole) {
         this.userRole = userRole;
+    }
+
+    public Set<Playlist> getPlaylistsOwnedByUser() {
+        return playlistsOwnedByUser;
+    }
+
+    public void setPlaylistsOwnedByUser(Set<Playlist> playlistsOwnedByUser) {
+        this.playlistsOwnedByUser = playlistsOwnedByUser;
     }
 }

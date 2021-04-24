@@ -12,13 +12,17 @@
     <div th:each="track : ${tracksNotInPlaylist}">
         <h3 th:if="${track.artist != null}" th:text="${track.artist.name}"></h3>
         <h3 th:text="${track.name}"></h3>
-        <a th:href="@{/playlists/{playlistId}/add/{trackId} (playlistId=${playlist.id}, trackId=${track.id})}">Přidat do playlistu</h3></a>
+        <a th:if="${ownedByLoggedUser}" th:href="@{/playlists/{playlistId}/add/{trackId} (playlistId=${playlist.id}, trackId=${track.id})}">
+            <h3>Přidat do playlistu</h3>
+        </a>
     </div>
 
     <div th:each="trackOfPlaylist : ${tracksOfPlaylist}">
         <h3 th:if="${trackOfPlaylist.track.artist != null}" th:text="${trackOfPlaylist.track.artist.name}"></h3>
         <h3 th:text="${trackOfPlaylist.track.name}"></h3>
-        <a th:href="@{/playlists/{playlistId}/remove/{trackId} (playlistId=${playlist.id}, trackId=${trackOfPlaylist.id})}">Odebrat z playlistu</h3></a>
+        <a th:if="${ownedByLoggedUser}" th:href="@{/playlists/{playlistId}/remove/{trackId} (playlistId=${playlist.id}, trackId=${trackOfPlaylist.id})}">
+            <h3>Odebrat z playlistu</h3>
+        </a>
     </div>
 </section>
 </body>

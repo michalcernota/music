@@ -9,7 +9,4 @@ import java.util.List;
 public interface UsersPlaylistsRepository extends JpaRepository<UsersPlaylist, Long> {
     @EntityGraph(attributePaths = {"user", "playlist"})
     List<UsersPlaylist> findAllByUser_Id(Long userId);
-
-    @EntityGraph(attributePaths = {"user", "playlist"})
-    List<UsersPlaylist> findAllByUser_IdAndIsOwnerIsTrue(Long userId);
 }
