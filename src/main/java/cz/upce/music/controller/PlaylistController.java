@@ -14,8 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 public class PlaylistController {
@@ -159,5 +165,51 @@ public class PlaylistController {
         usersPlaylistsRepository.deleteById(id);
 
         return "redirect:/users-playlists";
+    }
+
+    @GetMapping("/users-playlists/{id}/download")
+    public String playTracksOfPlaylist(@PathVariable Long id, Model model) {
+        Playlist playlist = playlistRepository.findById(id).get();
+        Set<TrackOfPlaylist> trackOfPlaylists = trackOfPlaylistRepository.findByPlaylistId(playlist.getId());
+        List<String> srcFiles = new ArrayList<>();
+        for (TrackOfPlaylist trackOfPlaylist: trackOfPlaylists) {
+            Track track = trackOfPlaylist.getTrack();
+            srcFiles.add(track.getPathToTrack());
+        }
+
+        try {
+            String home = System.getProperty("user.home");
+            FileOutputStream fos = new FileOutputStream(home + "/Downloads/" + playlist.getName() + ".zip");
+            ZipOutputStream zipOut = new ZipOutputStream(fos);
+            for (String srcFile : srcFiles) {
+                File fileToZip = new File(srcFile);
+                FileInputStream fis = new FileInputStream(fileToZip);
+                ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+                zipOut.putNextEntry(zipEntry);
+
+                byte[] bytes = new byte[1024];
+                int length;
+                while((length = fis.read(bytes)) >= 0) {
+                    zipOut.write(bytes, 0, length);
+                }
+                fis.close();
+            }
+            zipOut.close();
+            fos.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        User user = userService.getLoggedUser();
+        if(user != null) {
+            List<UsersPlaylist> usersPlaylists = usersPlaylistsRepository.findAllByUser_Id(user.getId());
+            model.addAttribute("usersPlaylists", usersPlaylists);
+
+            return "users-playlists";
+        }
+        else {
+            return "redirect:/playlists";
+        }
     }
 }

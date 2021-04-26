@@ -10,6 +10,9 @@
     <div th:each="usersPlaylist : ${usersPlaylists}">
         <h3 th:text="${usersPlaylist.playlist.name}"></h3>
         <a th:href="@{/users-playlists/{id}/remove (id=${usersPlaylist.id})}">Remove from my playlists</a>
+        <a th:href="@{/users-playlists/{playlistId}/download/ (playlistId=${usersPlaylist.playlist.id})}">
+            <h3>Download</h3>
+        </a>
     </div>
 </section>
 </body>
