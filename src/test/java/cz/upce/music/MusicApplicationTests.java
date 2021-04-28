@@ -103,22 +103,29 @@ class MusicApplicationTests {
 
     @Test
     void tracksByTypeTest() {
+        Artist artist = new Artist();
+        artist.setName("Artist");
+        artistRepository.save(artist);
+
         Track one = new Track();
         one.setName("Don't stop me now");
         one.setTrackType(TrackEnum.ROCK);
         one.setPathToTrack("");
+        one.setArtist(artist);
         trackRepository.save(one);
 
         Track two = new Track();
         two.setName("It was a heat of the moment");
         two.setTrackType(TrackEnum.ROCK);
         two.setPathToTrack("");
+        two.setArtist(artist);
         trackRepository.save(two);
 
         Track three = new Track();
         three.setName("Diamonds");
         three.setTrackType(TrackEnum.POP);
         three.setPathToTrack("");
+        three.setArtist(artist);
         trackRepository.save(three);
 
         List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(TrackEnum.ROCK);
@@ -154,26 +161,32 @@ class MusicApplicationTests {
 
         Playlist playlist = new Playlist();
         playlist.setName("my playlist");
+        playlist.setOwner(user);
 
         UsersPlaylist usersPlaylist = new UsersPlaylist();
         usersPlaylist.setUser(user);
         usersPlaylist.setPlaylist(playlist);
 
+        Artist artist = new Artist();
+        artist.setName("Artist");
+
         Track track = new Track();
         track.setName("track");
         track.setPathToTrack("");
+        track.setArtist(artist);
 
         TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
         trackOfPlaylist.setPlaylist(playlist);
         trackOfPlaylist.setTrack(track);
 
+        artistRepository.save(artist);
         userRepository.save(user);
         trackRepository.save(track);
         playlistRepository.save(playlist);
         trackOfPlaylistRepository.save(trackOfPlaylist);
         usersPlaylistsRepository.save(usersPlaylist);
 
-        Assert.assertEquals(1, userRepository.findAll().size());
+        Assert.assertEquals(2, userRepository.findAll().size());
         Assert.assertEquals(1, trackRepository.findAll().size());
         Assert.assertEquals(1, playlistRepository.findAll().size());
         Assert.assertEquals(1, trackOfPlaylistRepository.findAll().size());
@@ -200,24 +213,37 @@ class MusicApplicationTests {
 
     @Test
     public void tracksNotInPlaylistTest() {
+        Artist artist = new Artist();
+        artist.setName("Artist");
+        artistRepository.save(artist);
+
         Track trackOne = new Track();
         trackOne.setPathToTrack("");
         trackOne.setName("track one");
+        trackOne.setArtist(artist);
 
         Track trackTwo = new Track();
         trackTwo.setPathToTrack("");
         trackTwo.setName("track two");
+        trackTwo.setArtist(artist);
 
         Track trackThree = new Track();
         trackThree.setPathToTrack("");
         trackThree.setName("track three");
+        trackThree.setArtist(artist);
 
         trackRepository.save(trackOne);
         trackRepository.save(trackTwo);
         trackRepository.save(trackThree);
 
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("user");
+        userRepository.save(user);
+
         Playlist playlist = new Playlist();
         playlist.setName("playlist");
+        playlist.setOwner(user);
         playlistRepository.save(playlist);
 
         TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();

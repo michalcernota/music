@@ -209,7 +209,7 @@ public class PlaylistController {
             return "users-playlists";
         }
         else {
-            return "redirect:/playlists";
+            return "redirect:/playlists,";
         }
     }
 }
