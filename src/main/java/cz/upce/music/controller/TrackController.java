@@ -30,10 +30,10 @@ public class TrackController {
     @Autowired
     private UserService userService;
 
-    @ExceptionHandler(RuntimeException.class)
-    public String handlerException() {
-        return "error";
-    }
+    //@ExceptionHandler(RuntimeException.class)
+    //public String handlerException() {
+    //    return "error";
+    //}
 
     @GetMapping("/")
     public String showAllTracks(Model model) {
@@ -72,8 +72,6 @@ public class TrackController {
         String trackPath = fileService.uploadTrack(addTrackDto.getTrack());
         track.setPathToTrack(trackPath);
 
-        trackRepository.save(track);
-
         if (addTrackDto.getArtistId() != null) {
             Artist artist = artistRepository.findById(addTrackDto.getArtistId()).get();
             artist.getTracks().add(track);
@@ -81,6 +79,7 @@ public class TrackController {
             artistRepository.save(artist);
         }
 
+        trackRepository.save(track);
         return "redirect:/";
     }
 
