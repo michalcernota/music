@@ -15,20 +15,23 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class TrackController {
-    @Autowired
-    private TrackRepository trackRepository;
+    private final TrackRepository trackRepository;
 
-    @Autowired
-    private ArtistRepository artistRepository;
+    private final ArtistRepository artistRepository;
 
-    @Autowired
-    private TrackOfPlaylistRepository trackOfPlaylistRepository;
+    private final TrackOfPlaylistRepository trackOfPlaylistRepository;
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public TrackController(TrackRepository trackRepository, ArtistRepository artistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, FileService fileService, UserService userService) {
+        this.trackRepository = trackRepository;
+        this.artistRepository = artistRepository;
+        this.trackOfPlaylistRepository = trackOfPlaylistRepository;
+        this.fileService = fileService;
+        this.userService = userService;
+    }
 
     //@ExceptionHandler(RuntimeException.class)
     //public String handlerException() {

@@ -15,28 +15,32 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-@Controller
+@RestController
 public class ArtistController {
-    @Autowired
-    private ArtistRepository artistRepository;
+    private final ArtistRepository artistRepository;
 
-    @Autowired
-    private TrackRepository trackRepository;
+    private final TrackRepository trackRepository;
 
-    @Autowired
-    private TrackOfPlaylistRepository trackOfPlaylistRepository;
+    private final TrackOfPlaylistRepository trackOfPlaylistRepository;
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public ArtistController(ArtistRepository artistRepository, TrackRepository trackRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, FileService fileService, UserService userService) {
+        this.artistRepository = artistRepository;
+        this.trackRepository = trackRepository;
+        this.trackOfPlaylistRepository = trackOfPlaylistRepository;
+        this.fileService = fileService;
+        this.userService = userService;
+    }
 
     @GetMapping("/artists")
     public String showAllArtists(Model model) {

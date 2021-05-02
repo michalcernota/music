@@ -2,7 +2,6 @@ package cz.upce.music;
 
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
-import cz.upce.music.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
