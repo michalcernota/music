@@ -33,10 +33,10 @@ public class TrackController {
         this.userService = userService;
     }
 
-    //@ExceptionHandler(RuntimeException.class)
-    //public String handlerException() {
-    //    return "error";
-    //}
+    @ExceptionHandler(RuntimeException.class)
+    public String handlerException() {
+        return "error";
+    }
 
     @GetMapping("/")
     public String showAllTracks(Model model) {

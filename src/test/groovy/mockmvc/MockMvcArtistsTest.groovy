@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 @SpringBootTest(classes = MusicApplication.class)
 @AutoConfigureMockMvc
-class MockMvcTest {
+class MockMvcArtistsTest {
 
     @Autowired
     private ArtistRepository artistRepository;
@@ -41,6 +41,7 @@ class MockMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /*
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
@@ -53,12 +54,14 @@ class MockMvcTest {
                 ))
                 .build();
     }
+     */
 
     @Test
     @WithAnonymousUser
     void statusOkTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/artists"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("artists"));
+                .andExpect(MockMvcResultMatchers.view().name("artists"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("artists"));
     }
 }
