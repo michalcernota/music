@@ -6,7 +6,6 @@ import cz.upce.music.entity.User;
 import cz.upce.music.entity.UserRoleEnum;
 import cz.upce.music.repository.UserRepository;
 import cz.upce.music.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,11 +17,14 @@ import java.time.LocalDateTime;
 @Controller
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public String handlerException() {
@@ -30,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/login-form-process")
-    public String processLoginUser(LoginUserDto loginUserDto) {
+    public String processLoginUser(LoginUserDto loginUserDto) throws Exception {
         User user = userRepository.findUserByUsername(loginUserDto.getUserName());
         if (user != null) {
             if (user.getPassword().equals(loginUserDto.getPassword())) {
@@ -38,14 +40,14 @@ public class UserController {
             }
         }
         else {
-            // TODO: udělat nějak chybovou hlášku, když uživatel s tímto jménem neexistuje
+            throw new Exception("User " + loginUserDto.getUserName() + " already exists.");
         }
 
         return "redirect:/";
     }
 
     @PostMapping("/signup-form-process")
-    public String processSignupUser(SignUpUserDto signUpUserDto) {
+    public String processSignupUser(SignUpUserDto signUpUserDto) throws Exception {
         if (userRepository.findUserByUsername(signUpUserDto.getUserName()) == null) {
             User user = new User();
             user.setUsername(signUpUserDto.getUserName());
@@ -57,7 +59,7 @@ public class UserController {
             userService.saveUser(user);
         }
         else {
-            // TODO: udělat nějak chybovou hlášku, když uživatel už existuje
+            throw new Exception("User " + signUpUserDto.getUserName() + " already exists.");
         }
 
         return "redirect:/";

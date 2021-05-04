@@ -7,7 +7,6 @@ import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.repository.UsersPlaylistsRepository;
 import cz.upce.music.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,20 +25,23 @@ import java.util.zip.ZipOutputStream;
 @Controller
 public class PlaylistController {
 
-    @Autowired
-    private PlaylistRepository playlistRepository;
+    private final PlaylistRepository playlistRepository;
 
-    @Autowired
-    private TrackOfPlaylistRepository trackOfPlaylistRepository;
+    private final TrackOfPlaylistRepository trackOfPlaylistRepository;
 
-    @Autowired
-    private TrackRepository trackRepository;
+    private final TrackRepository trackRepository;
 
-    @Autowired
-    private UsersPlaylistsRepository usersPlaylistsRepository;
+    private final UsersPlaylistsRepository usersPlaylistsRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public PlaylistController(PlaylistRepository playlistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, UsersPlaylistsRepository usersPlaylistsRepository, UserService userService) {
+        this.playlistRepository = playlistRepository;
+        this.trackOfPlaylistRepository = trackOfPlaylistRepository;
+        this.trackRepository = trackRepository;
+        this.usersPlaylistsRepository = usersPlaylistsRepository;
+        this.userService = userService;
+    }
 
     @GetMapping("/playlists")
     public String showAllPlaylists(Model model) {
