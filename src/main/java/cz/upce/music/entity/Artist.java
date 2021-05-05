@@ -1,8 +1,6 @@
 package cz.upce.music.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -17,14 +15,8 @@ public class Artist {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column
-    private Date birthDate;
-
     @Column(length = 30)
     private String nationality;
-
-    @Column
-    private int MembersCount = 1;
 
     @Column
     private String pathToImage;
@@ -53,28 +45,12 @@ public class Artist {
         this.tracks = tracks;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
     public String getNationality() {
         return nationality;
     }
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
-    }
-
-    public int getMembersCount() {
-        return MembersCount;
-    }
-
-    public void setMembersCount(int membersCount) {
-        MembersCount = membersCount;
     }
 
     public String getPathToImage() {

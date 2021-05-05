@@ -2,15 +2,9 @@ package cz.upce.music.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
 public class AddOrEditArtistDto {
 
     private Long id;
-
-    private int membersCount = 1;
-
-    private String birthDate;
 
     private String name;
 
@@ -24,14 +18,6 @@ public class AddOrEditArtistDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getMembersCount() {
-        return membersCount;
-    }
-
-    public void setMembersCount(int membersCount) {
-        this.membersCount = membersCount;
     }
 
     public String getName() {
@@ -48,14 +34,6 @@ public class AddOrEditArtistDto {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
     }
 
     public MultipartFile getImage() {

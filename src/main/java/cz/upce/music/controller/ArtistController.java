@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.transaction.Transactional;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Controller
@@ -61,7 +59,6 @@ public class ArtistController {
             Artist byId = artistRepository.findById(id).orElse(new Artist());
 
             AddOrEditArtistDto dto = new AddOrEditArtistDto();
-            dto.setMembersCount(byId.getMembersCount());
             dto.setNationality(byId.getNationality());
             dto.setName(byId.getName());
             dto.setId(byId.getId());
@@ -78,14 +75,7 @@ public class ArtistController {
         Artist artist = new Artist();
         artist.setId(addArtistDto.getId());
         artist.setName(addArtistDto.getName());
-        try {
-            artist.setBirthDate(new SimpleDateFormat("dd/MM/yyyy").parse(addArtistDto.getBirthDate()));
-        }
-        catch (ParseException parseException) {
-            artist.setBirthDate(null);
-        }
         artist.setNationality(addArtistDto.getNationality());
-        artist.setMembersCount(addArtistDto.getMembersCount());
         String imagePath = fileService.uploadImage(addArtistDto.getImage());
         if (!imagePath.isEmpty()) {
             artist.setPathToImage(imagePath);
