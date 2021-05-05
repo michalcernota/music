@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,7 @@ public class UserController {
     public String processSignupUser(SignUpUserDto signUpUserDto) throws Exception {
         if (userRepository.findUserByUsername(signUpUserDto.getUserName()) == null) {
             User user = new User();
+            user.setId(signUpUserDto.getId());
             user.setUsername(signUpUserDto.getUserName());
             user.setPassword(signUpUserDto.getPassword());
             user.setUserRole(UserRoleEnum.User);
@@ -72,10 +74,30 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/signup")
-    public String signUp(Model model) {
-        model.addAttribute("user", new SignUpUserDto());
+    @GetMapping({"/signup", "/signup/{id}"})
+    public String signUp(@PathVariable(required = false) Long id, Model model) {
+        SignUpUserDto signUpUserDto = new SignUpUserDto();
+        if (id != null) {
+            User user = userRepository.findById(id).get();
+            signUpUserDto.setId(user.getId());
+            signUpUserDto.setUserName(user.getUsername());
+            signUpUserDto.setPassword(user.getPassword());
+            signUpUserDto.setEmail(user.getEmailAddress());
+        }
+        model.addAttribute("user", signUpUserDto);
 
         return "signup";
+    }
+
+    @GetMapping("/account")
+    public String getAccountInfo(Model model) {
+        User loggedUser = userService.getLoggedUser();
+        if (loggedUser != null) {
+            model.addAttribute("user", loggedUser);
+            return "user-detail";
+        }
+        else {
+            return "redirect:/login";
+        }
     }
 }
