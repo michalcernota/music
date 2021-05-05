@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
 import spock.lang.Specification
 
-//https://dk.upce.cz/bitstream/handle/10195/70553/KmentM_AutomatizovaneTestovani_PJ_2018.pdf?sequence=1&isAllowed=y
-
 @SpringBootTest
 @DataJpaTest
 class ArtistSpecification extends Specification {
