@@ -45,7 +45,21 @@ public class PlaylistController {
 
     @GetMapping("/playlists")
     public String showAllPlaylists(Model model) {
-        model.addAttribute("playlists", playlistRepository.findAll());
+        List<Long> usersPlaylistsIds = new ArrayList<>();
+        User user = userService.getLoggedUser();
+        if(user != null) {
+            List<UsersPlaylist> usersPlaylists = usersPlaylistsRepository.findAllByUser_Id(user.getId());
+            for (int i = 0; i < usersPlaylists.size(); i++) {
+                usersPlaylistsIds.add(usersPlaylists.get(i).getPlaylist().getId());
+            }
+        }
+
+        if (usersPlaylistsIds.size() > 0) {
+            model.addAttribute("playlists", playlistRepository.findPlaylistsByIdNotIn(usersPlaylistsIds));
+        }
+        else {
+            model.addAttribute("playlists", playlistRepository.findAll());
+        }
         model.addAttribute("loggedUser", userService.getLoggedUser());
         return "playlists";
     }
