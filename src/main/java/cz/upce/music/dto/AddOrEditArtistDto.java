@@ -1,7 +1,5 @@
 package cz.upce.music.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class AddOrEditArtistDto {
 
     private Long id;
@@ -10,7 +8,7 @@ public class AddOrEditArtistDto {
 
     private String nationality;
 
-    private MultipartFile image;
+    private String pathToImage;
 
     public Long getId() {
         return id;
@@ -36,11 +34,11 @@ public class AddOrEditArtistDto {
         this.nationality = nationality;
     }
 
-    public MultipartFile getImage() {
-        return image;
+    public String getPathToImage() {
+        return pathToImage;
     }
 
-    public void setImage(MultipartFile image) {
-        this.image = image;
+    public void setPathToImage(String pathToImage) {
+        this.pathToImage = pathToImage;
     }
 }
