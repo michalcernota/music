@@ -16,12 +16,12 @@ public class FileServiceImpl implements FileService {
     private final String defaultArtistImagePath = "C:/Users/michc/IdeaProjects/music/images/default/artist.png";
 
     @Override
-    public String uploadTrack(MultipartFile track) {
+    public String uploadTrack(String trackPath) {
         try {
-            String absolutePath = "C:/Users/michc/IdeaProjects/music/tracks/" + track.getOriginalFilename();
-            Path path = Paths.get(absolutePath);
-            Files.copy(track.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            return absolutePath;
+            File file = new File(trackPath);
+            Path destinationPath = Paths.get("C:/Users/michc/IdeaProjects/music/tracks/" + file.getName());
+            Files.copy(Paths.get(trackPath), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            return destinationPath.normalize().toString();
         } catch (IOException e) {
             e.printStackTrace();
         }

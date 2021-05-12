@@ -7,12 +7,16 @@ import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.FileService;
-import cz.upce.music.service.UserService;
-import org.springframework.stereotype.Controller;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
 public class TrackController {
     private final TrackRepository trackRepository;
 
@@ -22,14 +26,14 @@ public class TrackController {
 
     private final FileService fileService;
 
-    private final UserService userService;
+    private final ModelMapper mapper;
 
-    public TrackController(TrackRepository trackRepository, ArtistRepository artistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, FileService fileService, UserService userService) {
+    public TrackController(TrackRepository trackRepository, ArtistRepository artistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, FileService fileService, ModelMapper modelMapper) {
         this.trackRepository = trackRepository;
         this.artistRepository = artistRepository;
         this.trackOfPlaylistRepository = trackOfPlaylistRepository;
         this.fileService = fileService;
-        this.userService = userService;
+        this.mapper = modelMapper;
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -37,58 +41,53 @@ public class TrackController {
         return "error";
     }
 
-    @GetMapping("/")
-    public String showAllTracks(Model model) {
-        model.addAttribute("trackList", trackRepository.findAll());
-        model.addAttribute("loggedUser", userService.getLoggedUser());
-        return "track-list";
-    }
+    @GetMapping("/tracks")
+    public List<AddOrEditTrackDto> showAllTracks(Model model) {
+        List<Track> tracks = trackRepository.findAll();
+        Type listType = new TypeToken<List<AddOrEditTrackDto>>(){}.getType();
+        List<AddOrEditTrackDto> dtoList = mapper.map(tracks, listType);
 
-    @GetMapping("/track-detail/{id}")
-    public String showTrackDetail(@PathVariable(required = false) Long id, Model model) {
-        model.addAttribute("track", trackRepository.findById(id).get());
-        return "track-detail";
-    }
-
-    @GetMapping(value = {"/track-form", "/track-form/{id}"})
-    public String showTrackForm(@PathVariable(required = false) Long id, Model model) {
-        if (id != null) {
-            Track byId = trackRepository.findById(id).orElse(new Track());
-
-            AddOrEditTrackDto dto = new AddOrEditTrackDto();
-            dto.setId(byId.getId());
-            dto.setName(byId.getName());
-
-            model.addAttribute("track", dto);
-        } else {
-            model.addAttribute("track", new AddOrEditTrackDto());
+        for (AddOrEditTrackDto trackDto: dtoList) {
+            for(Track track: tracks) {
+                if (trackDto.getId().equals(track.getId())) {
+                    trackDto.setArtistName(track.getArtist().getName());
+                }
+            }
         }
-        return "track-form";
+
+        return dtoList;
     }
 
-    @PostMapping("/track-form-process")
-    public String trackFormProcess(AddOrEditTrackDto addTrackDto) {
-        Track track = new Track();
-        track.setId(addTrackDto.getId());
-        track.setName(addTrackDto.getName());
-        String trackPath = fileService.uploadTrack(addTrackDto.getTrack());
-        track.setPathToTrack(trackPath);
+    @DeleteMapping("/tracks/remove/{id}")
+    public AddOrEditTrackDto removeTrack(@PathVariable Long id) throws Exception {
+        Optional<Track> track = trackRepository.findById(id);
+        if (track.isPresent()) {
+            trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
+            trackRepository.deleteById(id);
+            return mapper.map(track.get(), AddOrEditTrackDto.class);
+        }
 
-        if (addTrackDto.getArtistId() != null) {
-            Artist artist = artistRepository.findById(addTrackDto.getArtistId()).get();
-            artist.getTracks().add(track);
-            track.setArtist(artist);
+        throw new Exception("Track not found");
+    }
+
+    @PostMapping(path = "/tracks/add", consumes = "application/json", produces = "application/json")
+    public AddOrEditTrackDto addTrack(@RequestBody AddOrEditTrackDto trackDto) throws Exception {
+        Optional<Artist> optionalArtist = artistRepository.findById(trackDto.getArtistId());
+
+        if (optionalArtist.isPresent()) {
+            Track newTrack = mapper.map(trackDto, Track.class);
+            String trackPath = fileService.uploadTrack(trackDto.getTrackPath());
+            newTrack.setPathToTrack(trackPath);
+
+            Artist artist = optionalArtist.get();
+            newTrack.setArtist(artist);
             artistRepository.save(artist);
+            newTrack = trackRepository.save(newTrack);
+            trackDto.setId(newTrack.getId());
+
+            return trackDto;
         }
 
-        trackRepository.save(track);
-        return "redirect:/";
-    }
-
-    @GetMapping("/remove-track/{id}")
-    public String removeTrack(@PathVariable Long id, Model model) {
-        trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
-        trackRepository.deleteById(id);
-        return "redirect:/";
+        throw new Exception("Invalid artist.");
     }
 }

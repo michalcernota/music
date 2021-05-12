@@ -1,16 +1,16 @@
 package cz.upce.music.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class AddOrEditTrackDto {
 
     private Long id;
 
     private String name;
 
-    private MultipartFile track;
+    private String trackPath;
 
     private Long artistId;
+
+    private String artistName;
 
     public Long getId() {
         return id;
@@ -28,12 +28,12 @@ public class AddOrEditTrackDto {
         this.name = name;
     }
 
-    public MultipartFile getTrack() {
-        return track;
+    public String getTrackPath() {
+        return trackPath;
     }
 
-    public void setTrack(MultipartFile track) {
-        this.track = track;
+    public void setTrackPath(String trackPath) {
+        this.trackPath = trackPath;
     }
 
     public Long getArtistId() {
@@ -42,5 +42,13 @@ public class AddOrEditTrackDto {
 
     public void setArtistId(Long artistId) {
         this.artistId = artistId;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
     }
 }
