@@ -7,22 +7,25 @@ import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.repository.UsersPlaylistsRepository;
 import cz.upce.music.service.UserService;
-import org.springframework.stereotype.Controller;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@Controller
+@RestController
 public class PlaylistController {
 
     private final PlaylistRepository playlistRepository;
@@ -35,14 +38,26 @@ public class PlaylistController {
 
     private final UserService userService;
 
-    public PlaylistController(PlaylistRepository playlistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, UsersPlaylistsRepository usersPlaylistsRepository, UserService userService) {
+    private final ModelMapper mapper;
+
+    public PlaylistController(PlaylistRepository playlistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, UsersPlaylistsRepository usersPlaylistsRepository, UserService userService, ModelMapper modelMapper) {
         this.playlistRepository = playlistRepository;
         this.trackOfPlaylistRepository = trackOfPlaylistRepository;
         this.trackRepository = trackRepository;
         this.usersPlaylistsRepository = usersPlaylistsRepository;
         this.userService = userService;
+        this.mapper = modelMapper;
     }
 
+    @GetMapping("/playlists")
+    public List<AddOrEditPlaylistDto> viewPlaylists() {
+        List<Playlist> playlists = playlistRepository.findAll();
+        Type listType = new TypeToken<List<AddOrEditPlaylistDto>>(){}.getType();
+        List<AddOrEditPlaylistDto> dtoList = mapper.map(playlists, listType);
+        return dtoList;
+    }
+
+    /*
     @GetMapping("/playlists")
     public String showAllPlaylists(Model model) {
         List<Long> usersPlaylistsIds = new ArrayList<>();
@@ -63,6 +78,7 @@ public class PlaylistController {
         model.addAttribute("loggedUser", userService.getLoggedUser());
         return "playlists";
     }
+     */
 
     @GetMapping(value= {"/playlists/{id}", "/playlist-detail/{id}"})
     public String showPlaylistDetail(@PathVariable Long id, Model model) {
