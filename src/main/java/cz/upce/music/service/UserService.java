@@ -6,5 +6,5 @@ public interface UserService {
 
     User getLoggedUser();
 
-    void saveUser(User user);
+    User saveUser(User user);
 }

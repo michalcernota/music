@@ -72,7 +72,7 @@ class ArtistUITest {
 
     @Test
     void successfulAdminLoginTest() {
-        creator.saveEntity(new User(username: "admin", password: passwordEncoder.encode("admin"), userRole: UserRoleEnum.Admin));
+        creator.saveEntity(new User(username: "admin", password: passwordEncoder.encode("admin"), userRole: UserRoleEnum.ROLE_ADMIN));
         performLogin("admin", "admin");
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/");
@@ -80,7 +80,7 @@ class ArtistUITest {
 
     @Test
     void successfulUserLoginTest() {
-        creator.saveEntity(new User(username: "user", password: passwordEncoder.encode("password"), userRole: UserRoleEnum.User));
+        creator.saveEntity(new User(username: "user", password: passwordEncoder.encode("password"), userRole: UserRoleEnum.ROLE_USER));
         performLogin("user", "password");
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/");
@@ -88,7 +88,7 @@ class ArtistUITest {
 
     @Test
     void unsuccessfulUserLoginTest() {
-        creator.saveEntity(new User(username: "user", password: passwordEncoder.encode("password"), userRole: UserRoleEnum.User));
+        creator.saveEntity(new User(username: "user", password: passwordEncoder.encode("password"), userRole: UserRoleEnum.ROLE_USER));
         performLogin("user", "wrong-password");
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/login?error");
@@ -98,7 +98,7 @@ class ArtistUITest {
     void addTrackToArtistTest() {
         Artist artist = new Artist(name: "Test artist");
         creator.saveEntity(artist);
-        creator.saveEntity(new User(username: "admin", password: passwordEncoder.encode("admin"), userRole: UserRoleEnum.Admin));
+        creator.saveEntity(new User(username: "admin", password: passwordEncoder.encode("admin"), userRole: UserRoleEnum.ROLE_ADMIN));
         performLogin("admin", "admin");
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/");

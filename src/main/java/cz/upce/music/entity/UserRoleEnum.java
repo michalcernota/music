@@ -1,8 +1,8 @@
 package cz.upce.music.entity;
 
 public enum UserRoleEnum {
-    User("USER"),
-    Admin("ADMIN");
+    ROLE_USER("ROLE_USER"),
+    ROLE_ADMIN("ROLE_ADMIN");
 
     private final String displayValue;
 

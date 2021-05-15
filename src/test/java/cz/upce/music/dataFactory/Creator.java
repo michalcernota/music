@@ -81,7 +81,7 @@ public class Creator {
                                 propValue = TrackEnum.ROCK;
                             }
                             else if(UserRoleEnum.class.equals(fieldClass)) {
-                                propValue = UserRoleEnum.Admin;
+                                propValue = UserRoleEnum.ROLE_ADMIN;
                             }
                             else if(LocalDateTime.class.equals(fieldClass)) {
                                 propValue = LocalDateTime.now();

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getLoggedUser() {
-
+        /*
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof CustomUserDetails) {
@@ -33,14 +33,16 @@ public class UserServiceImpl implements UserService {
         } else {
             return null;
         }
+         */
 
+        return null;
     }
 
     @Override
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
         user.setPassword(encodedPassword);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }
