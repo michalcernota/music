@@ -1,27 +1,23 @@
 package cz.upce.music.controller;
 
+import cz.upce.music.dto.AddOrEditArtistDto;
 import cz.upce.music.dto.AddOrEditPlaylistDto;
+import cz.upce.music.dto.TrackOfPlaylistDto;
 import cz.upce.music.entity.*;
-import cz.upce.music.repository.PlaylistRepository;
-import cz.upce.music.repository.TrackOfPlaylistRepository;
-import cz.upce.music.repository.TrackRepository;
-import cz.upce.music.repository.UsersPlaylistsRepository;
+import cz.upce.music.repository.*;
 import cz.upce.music.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,15 +32,18 @@ public class PlaylistController {
 
     private final UsersPlaylistsRepository usersPlaylistsRepository;
 
+    private final UserRepository userRepository;
+
     private final UserService userService;
 
     private final ModelMapper mapper;
 
-    public PlaylistController(PlaylistRepository playlistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, UsersPlaylistsRepository usersPlaylistsRepository, UserService userService, ModelMapper modelMapper) {
+    public PlaylistController(PlaylistRepository playlistRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, UsersPlaylistsRepository usersPlaylistsRepository, UserService userService, ModelMapper modelMapper, UserRepository userRepository) {
         this.playlistRepository = playlistRepository;
         this.trackOfPlaylistRepository = trackOfPlaylistRepository;
         this.trackRepository = trackRepository;
         this.usersPlaylistsRepository = usersPlaylistsRepository;
+        this.userRepository = userRepository;
         this.userService = userService;
         this.mapper = modelMapper;
     }
@@ -57,109 +56,85 @@ public class PlaylistController {
         return dtoList;
     }
 
-    /*
-    @GetMapping("/playlists")
-    public String showAllPlaylists(Model model) {
-        List<Long> usersPlaylistsIds = new ArrayList<>();
-        User user = userService.getLoggedUser();
-        if(user != null) {
-            List<UsersPlaylist> usersPlaylists = usersPlaylistsRepository.findAllByUser_Id(user.getId());
-            for (int i = 0; i < usersPlaylists.size(); i++) {
-                usersPlaylistsIds.add(usersPlaylists.get(i).getPlaylist().getId());
-            }
-        }
+    @PostMapping("/playlists/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<?> addNewPlaylist(@RequestBody AddOrEditPlaylistDto playlistDto) {
+        User owner = userRepository.findByUsername(playlistDto.getOwnerName());
 
-        if (usersPlaylistsIds.size() > 0) {
-            model.addAttribute("playlists", playlistRepository.findPlaylistsByIdNotIn(usersPlaylistsIds));
-        }
-        else {
-            model.addAttribute("playlists", playlistRepository.findAll());
-        }
-        model.addAttribute("loggedUser", userService.getLoggedUser());
-        return "playlists";
-    }
-     */
-
-    @GetMapping(value= {"/playlists/{id}", "/playlist-detail/{id}"})
-    public String showPlaylistDetail(@PathVariable Long id, Model model) {
-        Playlist playlist = playlistRepository.findById(id).get();
-        if (playlist != null) {
-            Set<TrackOfPlaylist> trackOfPlaylists = trackOfPlaylistRepository.findByPlaylistId(playlist.getId());
-            model.addAttribute("tracksOfPlaylist", trackOfPlaylists);
-        }
-        model.addAttribute("playlist", playlist);
-
-        Set<Long> ids = trackOfPlaylistRepository.getAllTrackIds();
-        List<Track> tracksNotInPlaylist = trackRepository.findTracksByIdIsNotIn(ids);
-        //TODO: rework - this does not work if size of ids is 0
-        if(ids.size() == 0) {
-            model.addAttribute("tracksNotInPlaylist", trackRepository.findAll());
-        }
-        else {
-            model.addAttribute("tracksNotInPlaylist", tracksNotInPlaylist);
-        }
-
-        boolean ownedByLoggedUser = userService.getLoggedUser().equals(playlist.getOwner());
-        model.addAttribute("ownedByLoggedUser", ownedByLoggedUser);
-
-        return "playlist-detail";
-    }
-
-    @GetMapping(value = {"/playlist-form", "/playlist-form/{id}"})
-    public String showPlaylistForm(@PathVariable(required = false) Long id, Model model) {
-        if (id != null) {
-            Playlist byId = playlistRepository.findById(id).orElse(new Playlist());
-            model.addAttribute("playlist", byId);
-        } else {
-            model.addAttribute("playlist", new AddOrEditPlaylistDto());
-        }
-        return "playlist-form";
-    }
-
-    @PostMapping("/playlist-form-process")
-    public String trackFormProcess(AddOrEditPlaylistDto addOrEditPlaylistDto) {
         Playlist playlist = new Playlist();
-        playlist.setId(addOrEditPlaylistDto.getId());
-        playlist.setName(addOrEditPlaylistDto.getName());
-        playlist.setOwner(userService.getLoggedUser());
+        playlist.setId(playlistDto.getId());
+        playlist.setName(playlistDto.getName());
+        playlist.setOwner(owner);
 
         UsersPlaylist usersPlaylist = new UsersPlaylist();
         usersPlaylist.setPlaylist(playlist);
-        usersPlaylist.setUser(userService.getLoggedUser());
+        usersPlaylist.setUser(owner);
 
         playlistRepository.save(playlist);
         usersPlaylistsRepository.save(usersPlaylist);
-        return "redirect:/playlists";
+
+        return ResponseEntity.ok(playlistDto);
     }
 
-    @GetMapping("/playlists/{playlistId}/add/{trackId}")
-    public String addTrackToPlaylist(@PathVariable Long playlistId, @PathVariable Long trackId, Model model) {
-        Playlist playlist = playlistRepository.findById(playlistId).get();
+    @GetMapping("/playlists/{id}")
+    public ResponseEntity<?> showPlaylistDetail(@PathVariable Long id) throws Exception {
+        Map<String, Object> map = new HashMap<>();
 
-        Track track = trackRepository.findById(trackId).get();
-
-        TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
-        trackOfPlaylist.setTrack(track);
-        trackOfPlaylist.setPlaylist(playlist);
-        trackOfPlaylistRepository.save(trackOfPlaylist);
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+        Playlist playlist;
+        if (!optionalPlaylist.isPresent()) {
+            throw new Exception("Playlist not found.");
+        }
+        else {
+            playlist = optionalPlaylist.get();
+        }
 
         Set<TrackOfPlaylist> trackOfPlaylists = trackOfPlaylistRepository.findByPlaylistId(playlist.getId());
-        model.addAttribute("tracksOfPlaylist", trackOfPlaylists);
 
-        model.addAttribute("playlist", playlist);
-        return "redirect:/playlist-detail/" + playlistId;
+        Type listType = new TypeToken<List<TrackOfPlaylistDto>>(){}.getType();
+        List<TrackOfPlaylistDto> dtoList = mapper.map(trackOfPlaylists, listType);
+        AddOrEditPlaylistDto playlistDto = mapper.map(playlist, AddOrEditPlaylistDto.class);
+        playlistDto.setOwnerName(playlist.getOwner().getUsername());
+
+        map.put("playlist", playlistDto);
+        map.put("tracksCount", dtoList.size());
+        map.put("tracksOfPlaylist", dtoList);
+        return ResponseEntity.ok(map);
     }
 
-    @GetMapping("/playlists/{playlistId}/remove/{trackId}")
-    public String removeTrackOfPlaylist(@PathVariable Long playlistId, @PathVariable Long trackId, Model model) {
-        trackOfPlaylistRepository.deleteById(trackId);
+    @PostMapping("/playlists/addTrack")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<?> addTrackToPlaylist(@RequestBody TrackOfPlaylistDto trackOfPlaylistDto) throws Exception {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(trackOfPlaylistDto.getPlaylistId());
+        Optional<Track> optionalTrack = trackRepository.findById(trackOfPlaylistDto.getTrackId());
 
-        Playlist playlist = playlistRepository.findById(playlistId).get();
-        Set<TrackOfPlaylist> trackOfPlaylists = trackOfPlaylistRepository.findByPlaylistId(playlist.getId());
-        model.addAttribute("tracksOfPlaylist", trackOfPlaylists);
-        model.addAttribute("playlist", playlist);
+        if (optionalTrack.isPresent() && optionalPlaylist.isPresent()) {
+            TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
+            trackOfPlaylist.setPlaylist(optionalPlaylist.get());
+            trackOfPlaylist.setTrack(optionalTrack.get());
+            trackOfPlaylistRepository.save(trackOfPlaylist);
 
-        return "redirect:/playlist-detail/" + playlistId;
+            return ResponseEntity.ok(trackOfPlaylistDto);
+        }
+
+        throw new Exception("Playlist or track was not found.");
+    }
+
+    @DeleteMapping("/playlists/deleteTrack")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<?> removeTrackFromPlaylist(@RequestBody TrackOfPlaylistDto trackOfPlaylistDto) throws Exception {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(trackOfPlaylistDto.getPlaylistId());
+        Optional<Track> optionalTrack = trackRepository.findById(trackOfPlaylistDto.getTrackId());
+
+        if (optionalTrack.isPresent() && optionalPlaylist.isPresent()) {
+            trackOfPlaylistRepository.deleteTrackOfPlaylistsByPlaylist_IdAndTrack_Id(
+                    optionalPlaylist.get().getId(),
+                    optionalTrack.get().getId());
+
+            return ResponseEntity.ok(trackOfPlaylistDto);
+        }
+
+        throw new Exception("Playlist or track was not found.");
     }
 
     @GetMapping("/playlist-detail/{id}/add-to-my-playlists")

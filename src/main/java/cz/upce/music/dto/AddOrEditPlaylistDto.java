@@ -6,6 +6,8 @@ public class AddOrEditPlaylistDto {
 
     private String name;
 
+    private String ownerName;
+
     public Long getId() {
         return id;
     }
@@ -20,5 +22,13 @@ public class AddOrEditPlaylistDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }
