@@ -1,6 +1,6 @@
 package cz.upce.music.controller;
 
-import cz.upce.music.dto.AddOrEditTrackDto;
+import cz.upce.music.dto.TrackDto;
 import cz.upce.music.entity.Artist;
 import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
@@ -12,6 +12,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
@@ -42,12 +43,12 @@ public class TrackController {
     }
 
     @GetMapping("/tracks")
-    public List<AddOrEditTrackDto> showAllTracks(Model model) {
+    public List<TrackDto> showAllTracks() {
         List<Track> tracks = trackRepository.findAll();
-        Type listType = new TypeToken<List<AddOrEditTrackDto>>(){}.getType();
-        List<AddOrEditTrackDto> dtoList = mapper.map(tracks, listType);
+        Type listType = new TypeToken<List<TrackDto>>(){}.getType();
+        List<TrackDto> dtoList = mapper.map(tracks, listType);
 
-        for (AddOrEditTrackDto trackDto: dtoList) {
+        for (TrackDto trackDto: dtoList) {
             for(Track track: tracks) {
                 if (trackDto.getId().equals(track.getId())) {
                     trackDto.setArtistName(track.getArtist().getName());
@@ -58,20 +59,21 @@ public class TrackController {
         return dtoList;
     }
 
+    @Transactional
     @DeleteMapping("/tracks/remove/{id}")
-    public AddOrEditTrackDto removeTrack(@PathVariable Long id) throws Exception {
+    public TrackDto removeTrack(@PathVariable Long id) throws Exception {
         Optional<Track> track = trackRepository.findById(id);
         if (track.isPresent()) {
             trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
             trackRepository.deleteById(id);
-            return mapper.map(track.get(), AddOrEditTrackDto.class);
+            return mapper.map(track.get(), TrackDto.class);
         }
 
         throw new Exception("Track not found");
     }
 
     @PostMapping(path = "/tracks/add", consumes = "application/json", produces = "application/json")
-    public AddOrEditTrackDto addTrack(@RequestBody AddOrEditTrackDto trackDto) throws Exception {
+    public TrackDto addTrack(@RequestBody TrackDto trackDto) throws Exception {
         Optional<Artist> optionalArtist = artistRepository.findById(trackDto.getArtistId());
 
         if (optionalArtist.isPresent()) {

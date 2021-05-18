@@ -1,7 +1,7 @@
 package cz.upce.music.controller;
 
-import cz.upce.music.dto.AddOrEditArtistDto;
-import cz.upce.music.dto.AddOrEditTrackDto;
+import cz.upce.music.dto.ArtistDto;
+import cz.upce.music.dto.TrackDto;
 import cz.upce.music.entity.Artist;
 import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
@@ -14,6 +14,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -42,26 +43,24 @@ public class ArtistController {
     }
 
     @GetMapping("/artists")
-    public List<AddOrEditArtistDto> showAllArtists() {
+    public List<ArtistDto> showAllArtists() {
         List<Artist> artists = artistRepository.findAll();
-        Type listType = new TypeToken<List<AddOrEditArtistDto>>(){}.getType();
-        List<AddOrEditArtistDto> dtoList = mapper.map(artists, listType);
-
-        return dtoList;
+        Type listType = new TypeToken<List<ArtistDto>>(){}.getType();
+        return mapper.map(artists, listType);
     }
 
-    @GetMapping("/artist-detail/{id}")
-    public Map<String,Object> showArtistDetail(@PathVariable Long id, Model model) throws Exception {
+    @GetMapping("/artists/detail/{id}")
+    public Map<String,Object> showArtistDetail(@PathVariable Long id) throws Exception {
         Map<String, Object> map = new HashMap<>();
         Optional<Artist> optionalArtist = artistRepository.findById(id);
         if(optionalArtist.isPresent()) {
             Artist artist = optionalArtist.get();
             List<Track> tracks = trackRepository.findTracksByArtist_Id(id);
 
-            map.put("artist", mapper.map(artist, AddOrEditArtistDto.class));
+            map.put("artist", mapper.map(artist, ArtistDto.class));
 
-            Type listType = new TypeToken<List<AddOrEditTrackDto>>(){}.getType();
-            List<AddOrEditTrackDto> dtoList = mapper.map(tracks, listType);
+            Type listType = new TypeToken<List<TrackDto>>(){}.getType();
+            List<TrackDto> dtoList = mapper.map(tracks, listType);
 
             map.put("tracks", dtoList);
 
@@ -73,7 +72,7 @@ public class ArtistController {
     }
 
     @PostMapping(path = "/artists/add", consumes = "application/json", produces = "application/json")
-    public Artist addNewArtist(@RequestBody AddOrEditArtistDto artistDto) throws IOException {
+    public Artist addNewArtist(@RequestBody ArtistDto artistDto) throws IOException {
         Artist newArtist = mapper.map(artistDto, Artist.class);
         if (artistDto.getPathToImage() != null) {
             String imagePath = fileService.uploadImage(artistDto.getPathToImage());
@@ -85,6 +84,7 @@ public class ArtistController {
         return artistRepository.save(newArtist);
     }
 
+    @Transactional
     @DeleteMapping(path = "/artists/{id}")
     public Artist removeArtist(@PathVariable Long id) throws Exception {
         Optional<Artist> optionalArtist = artistRepository.findById(id);
@@ -103,21 +103,5 @@ public class ArtistController {
         else {
             throw new Exception("Artist not found");
         }
-    }
-
-    // dodělat přidávání/odebárání skladeb
-    @GetMapping("/artist/{id}/add-tracks")
-    public String addTracksToArtist(@PathVariable Long id, Model model) {
-        AddOrEditTrackDto addOrEditTrackDto = new AddOrEditTrackDto();
-        addOrEditTrackDto.setArtistId((id));
-
-        model.addAttribute("track", addOrEditTrackDto);
-        return "track-form";
-    }
-
-    @GetMapping("/artist/{artistId}/remove-track/{trackId}")
-    public String removeTrackOfArtist(@PathVariable Long artistId, @PathVariable Long trackId, Model model) {
-        trackRepository.deleteById(trackId);
-        return "redirect:/artist-detail/" + artistId;
     }
 }

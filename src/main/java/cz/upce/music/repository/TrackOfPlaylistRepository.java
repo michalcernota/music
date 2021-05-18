@@ -11,12 +11,10 @@ public interface TrackOfPlaylistRepository extends JpaRepository<TrackOfPlaylist
     @EntityGraph(attributePaths = {"playlist","track"})
     Set<TrackOfPlaylist> findByPlaylistId(Long id);
 
-    int countAllByPlaylistId(Long id);
-
     @Query("select t.track.id from TrackOfPlaylist t")
     Set<Long> getAllTrackIds();
 
     void deleteTrackOfPlaylistsByTrack_Id(Long id);
 
-    void deleteTrackOfPlaylistsByPlaylist_IdAndTrack_Id(Long playlistId, Long trackId);
+    void deleteTrackOfPlaylistsByPlaylist_Id(Long id);
 }

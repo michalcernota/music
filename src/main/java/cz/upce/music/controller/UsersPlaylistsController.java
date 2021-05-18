@@ -1,6 +1,5 @@
 package cz.upce.music.controller;
 
-import cz.upce.music.dto.LoginUserDto;
 import cz.upce.music.dto.UsersPlaylistDto;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.PlaylistRepository;
@@ -12,8 +11,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +28,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @RestController
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 public class UsersPlaylistsController {
 
     private final TrackOfPlaylistRepository trackOfPlaylistRepository;
@@ -91,7 +87,7 @@ public class UsersPlaylistsController {
         }
 
         usersPlaylistsRepository.deleteById(id);
-        return ResponseEntity.ok(mapper.map(usersPlaylistOptional.get(), LoginUserDto.class));
+        return ResponseEntity.ok(mapper.map(usersPlaylistOptional.get(), UsersPlaylistDto.class));
     }
 
     @GetMapping("/usersPlaylists/download")

@@ -1,6 +1,6 @@
 package cz.upce.music.dto;
 
-public class AddOrEditArtistDto {
+public class ArtistDto {
 
     private Long id;
 

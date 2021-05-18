@@ -1,16 +1,18 @@
 package cz.upce.music.controller;
 
-import cz.upce.music.dto.AddOrEditPlaylistDto;
+import cz.upce.music.dto.PlaylistDto;
 import cz.upce.music.dto.TrackOfPlaylistDto;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
 import cz.upce.music.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -39,16 +41,15 @@ public class PlaylistController {
     }
 
     @GetMapping("/playlists")
-    public List<AddOrEditPlaylistDto> viewPlaylists() {
+    public List<PlaylistDto> viewPlaylists() {
         List<Playlist> playlists = playlistRepository.findAll();
-        Type listType = new TypeToken<List<AddOrEditPlaylistDto>>(){}.getType();
-        List<AddOrEditPlaylistDto> dtoList = mapper.map(playlists, listType);
-        return dtoList;
+        Type listType = new TypeToken<List<PlaylistDto>>(){}.getType();
+        return mapper.map(playlists, listType);
     }
 
     @PostMapping("/playlists/add")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> addNewPlaylist(@RequestBody AddOrEditPlaylistDto playlistDto) {
+    public ResponseEntity<?> addNewPlaylist(@RequestBody PlaylistDto playlistDto) {
         User owner = userRepository.findByUsername(playlistDto.getOwnerName());
 
         Playlist playlist = new Playlist();
@@ -60,10 +61,25 @@ public class PlaylistController {
         usersPlaylist.setPlaylist(playlist);
         usersPlaylist.setUser(owner);
 
-        playlistRepository.save(playlist);
+        Playlist result = playlistRepository.save(playlist);
         usersPlaylistsRepository.save(usersPlaylist);
 
-        return ResponseEntity.ok(playlistDto);
+        return ResponseEntity.ok(mapper.map(result, PlaylistDto.class));
+    }
+
+    @Transactional
+    @DeleteMapping("/playlists/delete/{id}")
+    public ResponseEntity<?> deletePlaylist(@PathVariable Long id) {
+        if (playlistRepository.findById(id).isPresent()) {
+            usersPlaylistsRepository.deleteUsersPlaylistsByPlaylist_Id(id);
+            trackOfPlaylistRepository.deleteTrackOfPlaylistsByPlaylist_Id(id);
+            playlistRepository.deleteById(id);
+
+            return ResponseEntity.ok("Playlist deleted successfully.");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
+        }
     }
 
     @GetMapping("/playlists/{id}")
@@ -83,7 +99,7 @@ public class PlaylistController {
 
         Type listType = new TypeToken<List<TrackOfPlaylistDto>>(){}.getType();
         List<TrackOfPlaylistDto> dtoList = mapper.map(trackOfPlaylists, listType);
-        AddOrEditPlaylistDto playlistDto = mapper.map(playlist, AddOrEditPlaylistDto.class);
+        PlaylistDto playlistDto = mapper.map(playlist, PlaylistDto.class);
         playlistDto.setOwnerName(playlist.getOwner().getUsername());
 
         map.put("playlist", playlistDto);
