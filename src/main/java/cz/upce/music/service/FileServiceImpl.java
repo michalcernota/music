@@ -7,26 +7,27 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 @Service
 public class FileServiceImpl implements FileService {
+    @Override
+    public String uploadTrackV2(MultipartFile file, long id) throws IOException {
+        String destination = "tracks/" + id + ".mp3";
+        file.transferTo(Paths.get(destination));
+
+        return ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path(destination)
+                .toUriString();
+    }
 
     @Override
-    public String uploadTrack(String trackPath) {
-        try {
-            File file = new File(trackPath);
-            Path destinationPath = Paths.get("C:/Users/michc/IdeaProjects/music/tracks/" + file.getName());
-            Files.copy(Paths.get(trackPath), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            return destinationPath.normalize().toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public boolean deleteTrack(String trackPath) throws IOException {
+        String fileName = trackPath.substring(trackPath.lastIndexOf('/') + 1);
+        File file = new File("tracks/" + fileName);
+        return file.delete();
     }
 
     @Override

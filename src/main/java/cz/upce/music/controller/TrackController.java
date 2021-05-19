@@ -9,11 +9,16 @@ import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.FileService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,35 +66,47 @@ public class TrackController {
 
     @Transactional
     @DeleteMapping("/tracks/remove/{id}")
-    public TrackDto removeTrack(@PathVariable Long id) throws Exception {
-        Optional<Track> track = trackRepository.findById(id);
-        if (track.isPresent()) {
+    public ResponseEntity<?> removeTrack(@PathVariable Long id) throws Exception {
+        Optional<Track> optionalTrack = trackRepository.findById(id);
+        if (optionalTrack.isPresent()) {
+            Track trackToDelete = optionalTrack.get();
+
             trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
             trackRepository.deleteById(id);
-            return mapper.map(track.get(), TrackDto.class);
+            fileService.deleteTrack(trackToDelete.getPathToTrack());
+            return ResponseEntity.ok(mapper.map(trackToDelete, TrackDto.class));
         }
 
-        throw new Exception("Track not found");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
     }
 
-    @PostMapping(path = "/tracks/add", consumes = "application/json", produces = "application/json")
-    public TrackDto addTrack(@RequestBody TrackDto trackDto) throws Exception {
-        Optional<Artist> optionalArtist = artistRepository.findById(trackDto.getArtistId());
+    @PostMapping(path = "/tracks/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addTrackV2(@RequestParam MultipartFile[] files, @RequestParam Long artistId) throws IOException {
+        List<TrackDto> trackDtoList = new ArrayList<>();
+
+        Optional<Artist> optionalArtist = artistRepository.findById(artistId);
 
         if (optionalArtist.isPresent()) {
-            Track newTrack = mapper.map(trackDto, Track.class);
-            String trackPath = fileService.uploadTrack(trackDto.getTrackPath());
-            newTrack.setPathToTrack(trackPath);
+            long trackId = 0;
+            Optional<Long> optionalTrackId = trackRepository.getMaxId();
+            if (optionalTrackId.isPresent()) {
+                trackId = optionalTrackId.get();
+            }
 
-            Artist artist = optionalArtist.get();
-            newTrack.setArtist(artist);
-            artistRepository.save(artist);
-            newTrack = trackRepository.save(newTrack);
-            trackDto.setId(newTrack.getId());
+            for (MultipartFile file : files) {
+                String trackPath = fileService.uploadTrackV2(file, trackId++);
 
-            return trackDto;
+                Track track = new Track();
+                track.setArtist(optionalArtist.get());
+                track.setPathToTrack(trackPath);
+                track.setName(file.getOriginalFilename());
+                track = trackRepository.save(track);
+                trackDtoList.add(mapper.map(track, TrackDto.class));
+            }
+
+            return ResponseEntity.ok(trackDtoList);
         }
 
-        throw new Exception("Invalid artist.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
     }
 }

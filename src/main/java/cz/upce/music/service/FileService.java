@@ -7,7 +7,8 @@ import java.net.MalformedURLException;
 import java.util.Optional;
 
 public interface FileService {
-    String uploadTrack(String trackPath);
+    String uploadTrackV2(MultipartFile file, long id) throws IOException;
+    boolean deleteTrack(String trackPath) throws IOException;
     String uploadImage(Optional<MultipartFile> file, long id) throws IOException;
     boolean deleteImage(String imagePath) throws MalformedURLException;
 }

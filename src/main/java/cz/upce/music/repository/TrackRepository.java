@@ -11,11 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TrackRepository extends JpaRepository<Track, Long> {
-    @Query("select t from Track t where t.id between 1 and 2")
-    List<Track> findTracksByIdBetween(Long start, Long end);
-
-    Track findTrackByNameContains(String contains);
-
     List<Track> findTrackByTrackTypeIs(TrackEnum trackType);
 
     Optional<Track> findById(Long id);
@@ -27,4 +22,7 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     List<Track> findTracksByIdIsNotIn(Collection<Long> ids);
 
     void deleteTracksByArtist_Id(Long id);
+
+    @Query("select max(t.id) from Track t")
+    Optional<Long> getMaxId();
 }

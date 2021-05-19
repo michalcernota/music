@@ -65,7 +65,7 @@ public class ArtistController {
 
             map.put("tracks", dtoList);
 
-            ResponseEntity.ok(map);
+            return ResponseEntity.ok(map);
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
@@ -83,9 +83,9 @@ public class ArtistController {
                 trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(track.getId());
             }
 
-            fileService.deleteImage(artistToRemove.getPathToImage());
             trackRepository.deleteTracksByArtist_Id(id);
             artistRepository.deleteById(id);
+            fileService.deleteImage(artistToRemove.getPathToImage());
 
             return ResponseEntity.ok(mapper.map(artistToRemove, ArtistDto.class));
         }
