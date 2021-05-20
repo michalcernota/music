@@ -1,5 +1,6 @@
 package cz.upce.music.controller;
 
+import cz.upce.music.dto.TrackDto;
 import cz.upce.music.dto.UsersPlaylistDto;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.PlaylistRepository;
@@ -11,11 +12,9 @@ import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @RestController
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 public class UsersPlaylistsController {
 
     private final TrackOfPlaylistRepository trackOfPlaylistRepository;
@@ -48,8 +48,8 @@ public class UsersPlaylistsController {
         this.mapper = mapper;
     }
 
-    @PostMapping("/usersPlaylists/add")
-    public ResponseEntity<?> addPlaylistsToMyPlaylists(@RequestBody Long playlistId) {
+    @PostMapping("/usersPlaylists/add/{playlistId}")
+    public ResponseEntity<?> addPlaylistsToMyPlaylists(@PathVariable Long playlistId) {
         User user = userService.getLoggedUser();
 
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
@@ -79,8 +79,9 @@ public class UsersPlaylistsController {
         return ResponseEntity.ok(dtoList);
     }
 
-    @PostMapping("/users-playlists/remove")
-    public ResponseEntity<?> removeFromMyPlaylists(@RequestBody Long id) {
+    @Transactional
+    @DeleteMapping("/usersPlaylists/remove/{id}")
+    public ResponseEntity<?> removeFromMyPlaylists(@PathVariable Long id) {
         Optional<UsersPlaylist> usersPlaylistOptional = usersPlaylistsRepository.findById(id);
         if (!usersPlaylistOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
@@ -88,6 +89,27 @@ public class UsersPlaylistsController {
 
         usersPlaylistsRepository.deleteById(id);
         return ResponseEntity.ok(mapper.map(usersPlaylistOptional.get(), UsersPlaylistDto.class));
+    }
+
+    @GetMapping("/usersPlaylists/{id}/tracks")
+    public ResponseEntity<?> getTracks(@PathVariable Long id) {
+        Optional<UsersPlaylist> optionalUsersPlaylist = usersPlaylistsRepository.findById(id);
+        if (optionalUsersPlaylist.isPresent()) {
+            UsersPlaylist usersPlaylist = optionalUsersPlaylist.get();
+
+            Playlist playlist = usersPlaylist.getPlaylist();
+            Set<TrackOfPlaylist> tracksOfPlaylist =  trackOfPlaylistRepository.findByPlaylistId(playlist.getId());
+
+            List<TrackDto> tracks = new ArrayList<>();
+            for (TrackOfPlaylist trackOfPlaylist: tracksOfPlaylist) {
+                Track track = trackOfPlaylist.getTrack();
+                tracks.add(mapper.map(track, TrackDto.class));
+            }
+
+            return ResponseEntity.ok(tracks);
+        }
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
     }
 
     @GetMapping("/usersPlaylists/download")
