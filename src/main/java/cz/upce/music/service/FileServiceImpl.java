@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class FileServiceImpl implements FileService {
     @Override
-    public String uploadTrackV2(MultipartFile file, long id) throws IOException {
+    public String uploadTrack(MultipartFile file, long id) throws IOException {
         String destination = "tracks/" + id + ".mp3";
         file.transferTo(Paths.get(destination));
 

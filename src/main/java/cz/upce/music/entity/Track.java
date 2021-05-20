@@ -16,13 +16,13 @@ public class Track {
     @Enumerated(EnumType.STRING)
     private TrackEnum trackType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
     private String pathToTrack;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylists;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 512)
     private String name;
 
     public String getName() {
