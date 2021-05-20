@@ -5,8 +5,6 @@ import cz.upce.music.entity.User;
 import cz.upce.music.entity.UserRoleEnum;
 import cz.upce.music.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
