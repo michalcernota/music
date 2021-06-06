@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
-    @EntityGraph(attributePaths = {"trackOfPlaylist", "user"})
-    Playlist findByName(String name);
+    @Override
+    @EntityGraph(attributePaths = {"trackOfPlaylist", "owner", "usersPlaylists"})
+    List<Playlist> findAll();
 
     @EntityGraph(attributePaths = {"trackOfPlaylist", "owner", "usersPlaylists"})
     List<Playlist> findPlaylistsByIdNotIn(List<Long> id);

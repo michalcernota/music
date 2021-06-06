@@ -38,7 +38,11 @@ public class PlaylistService {
     public List<PlaylistDto> getAll() {
         List<Playlist> playlists = playlistRepository.findAll();
         Type listType = new TypeToken<List<PlaylistDto>>(){}.getType();
-        return mapper.map(playlists, listType);
+        List<PlaylistDto> playlistDtoList = mapper.map(playlists, listType);
+        for (int i = 0; i < playlistDtoList.size(); i++) {
+            playlistDtoList.get(i).setOwnerName(playlists.get(i).getOwner().getUsername());
+        }
+        return playlistDtoList;
     }
 
     public PlaylistDto create(PlaylistDto playlistDto) {

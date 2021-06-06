@@ -11,4 +11,6 @@ public interface UsersPlaylistsRepository extends JpaRepository<UsersPlaylist, L
     List<UsersPlaylist> findAllByUser_Id(Long userId);
 
     void deleteUsersPlaylistsByPlaylist_Id(Long id);
+
+    long countByUser_IdAndPlaylist_Id(Long userId, Long playlistId);
 }
