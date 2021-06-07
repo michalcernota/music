@@ -8,6 +8,7 @@ import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Component
 public class TrackService {
 
     private final TrackRepository trackRepository;
@@ -82,7 +84,7 @@ public class TrackService {
         return null;
     }
 
-    public TrackDto delete(Long id) throws IOException {
+    public TrackDto deleteTrackAndFile(Long id) throws IOException {
         Optional<Track> optionalTrack = trackRepository.findById(id);
         if (optionalTrack.isPresent()) {
             Track trackToDelete = optionalTrack.get();
@@ -95,5 +97,34 @@ public class TrackService {
         }
 
         return null;
+    }
+
+    public TrackDto deleteTrack(Long id) {
+        Optional<Track> optionalTrack = trackRepository.findById(id);
+        if (optionalTrack.isPresent()) {
+            Track trackToDelete = optionalTrack.get();
+
+            trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
+            trackRepository.deleteById(id);
+
+            return mapper.map(trackToDelete, TrackDto.class);
+        }
+
+        return null;
+    }
+
+    public void deleteAllTracks() {
+        List<Track> tracks = trackRepository.findAll();
+        for (Track track: tracks) {
+            deleteTrack(track.getId());
+        }
+    }
+
+    public List<Track> findAll() {
+        return trackRepository.findAll();
+    }
+
+    public Optional<Track> findTrackById(Long id) {
+        return trackRepository.findById(id);
     }
 }

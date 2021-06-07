@@ -31,7 +31,7 @@ public class TrackController {
     public ResponseEntity<?> removeTrack(@PathVariable Long id) {
         try {
 
-            TrackDto deletedTrack = trackService.delete(id);
+            TrackDto deletedTrack = trackService.deleteTrackAndFile(id);
             if (deletedTrack != null) {
                 return ResponseEntity.ok(deletedTrack);
             } else {
