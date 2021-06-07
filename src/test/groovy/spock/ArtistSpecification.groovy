@@ -20,7 +20,7 @@ class ArtistSpecification extends Specification {
 
     def "should demonstrate given-then-when"() {
         given:
-        def artist = new Artist("Artist one")
+        def artist = new Artist(name: "Artist one")
 
         when:
         String name = artist.getName();

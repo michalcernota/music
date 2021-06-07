@@ -9,6 +9,8 @@ import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Component
 public class ArtistService {
 
     private final TrackRepository trackRepository;
@@ -42,6 +45,8 @@ public class ArtistService {
     public List<Artist> getAll() {
         return artistRepository.findAll();
     }
+
+    public Optional<Artist> findById(Long id) { return artistRepository.findById(id); }
 
     public Map<String, Object> getArtistDetail(Long id) {
         Map<String, Object> map = new HashMap<>();

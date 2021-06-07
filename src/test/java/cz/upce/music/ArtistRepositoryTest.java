@@ -28,11 +28,13 @@ class ArtistRepositoryTest {
     private ArtistTestDataFactory artistTestDataFactory;
 
     @Test
-    void saveProductTest() {
+    void saveArtistTest() {
+
+        long count = artistRepository.count();
 
         artistTestDataFactory.saveArtist("MyArtist");
         List<Artist> all = artistRepository.findAll();
-        Assertions.assertThat(all.size()).isEqualTo(1);
+        Assertions.assertThat(all.size()).isEqualTo(count + 1);
 
     }
 }
