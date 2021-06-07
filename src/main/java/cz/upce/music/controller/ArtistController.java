@@ -9,6 +9,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +53,7 @@ public class ArtistController {
 
     @Transactional
     @DeleteMapping(path = "/artists/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> removeArtist(@PathVariable Long id) {
         Optional<Artist> optionalArtist = artistRepository.findById(id);
 
@@ -72,6 +74,7 @@ public class ArtistController {
     }
 
     @PostMapping(value = "/artists/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> uploadFile(@RequestParam Optional<MultipartFile> file, @RequestParam String name, @RequestParam String nationality) {
 
         try {
