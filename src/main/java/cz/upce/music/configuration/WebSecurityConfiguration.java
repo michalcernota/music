@@ -1,6 +1,6 @@
 package cz.upce.music.configuration;
 
-import cz.upce.music.service.CustomUserDetailService;
+import cz.upce.music.service.implementations.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
