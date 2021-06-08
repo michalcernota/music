@@ -1,7 +1,7 @@
 package cz.upce.music.controller;
 
 import cz.upce.music.dto.TrackDto;
-import cz.upce.music.service.TrackServiceImpl;
+import cz.upce.music.service.implementations.TrackServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

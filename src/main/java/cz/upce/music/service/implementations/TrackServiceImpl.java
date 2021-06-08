@@ -1,4 +1,4 @@
-package cz.upce.music.service;
+package cz.upce.music.service.implementations;
 
 import cz.upce.music.dto.TrackDto;
 import cz.upce.music.entity.Artist;

@@ -3,7 +3,7 @@ package cz.upce.music
 
 import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Track
-import cz.upce.music.service.TrackServiceImpl
+import cz.upce.music.service.implementations.TrackServiceImpl
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
