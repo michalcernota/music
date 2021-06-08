@@ -1,9 +1,10 @@
-package cz.upce.music.service;
+package cz.upce.music.service.implementations;
 
 import cz.upce.music.dto.PlaylistDto;
 import cz.upce.music.dto.TrackOfPlaylistDto;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
+import cz.upce.music.service.interfaces.PlaylistService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 @Service
-public class PlaylistService {
+public class PlaylistServiceImpl implements PlaylistService {
 
     private final PlaylistRepository playlistRepository;
 
@@ -26,7 +27,7 @@ public class PlaylistService {
 
     private final ModelMapper mapper;
 
-    public PlaylistService(PlaylistRepository playlistRepository, UserRepository userRepository, UsersPlaylistsRepository usersPlaylistsRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, ModelMapper mapper) {
+    public PlaylistServiceImpl(PlaylistRepository playlistRepository, UserRepository userRepository, UsersPlaylistsRepository usersPlaylistsRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, ModelMapper mapper) {
         this.playlistRepository = playlistRepository;
         this.userRepository = userRepository;
         this.usersPlaylistsRepository = usersPlaylistsRepository;
@@ -35,6 +36,7 @@ public class PlaylistService {
         this.mapper = mapper;
     }
 
+    @Override
     public List<PlaylistDto> getAll() {
         List<Playlist> playlists = playlistRepository.findAll();
         Type listType = new TypeToken<List<PlaylistDto>>(){}.getType();
@@ -45,6 +47,7 @@ public class PlaylistService {
         return playlistDtoList;
     }
 
+    @Override
     public PlaylistDto create(PlaylistDto playlistDto) {
         User owner = userRepository.findByUsername(playlistDto.getOwnerName());
 
@@ -62,6 +65,7 @@ public class PlaylistService {
         return mapper.map(result, PlaylistDto.class);
     }
 
+    @Override
     public boolean delete(Long id) {
         if (playlistRepository.findById(id).isPresent()) {
             usersPlaylistsRepository.deleteUsersPlaylistsByPlaylist_Id(id);
@@ -75,6 +79,7 @@ public class PlaylistService {
         }
     }
 
+    @Override
     public Map<String, Object> getPlaylistDetail(Long id) {
         Map<String, Object> map = new HashMap<>();
 
@@ -99,6 +104,7 @@ public class PlaylistService {
         return map;
     }
 
+    @Override
     public TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto) {
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(trackOfPlaylistDto.getPlaylistId());
         Optional<Track> optionalTrack = trackRepository.findById(trackOfPlaylistDto.getTrackId());
@@ -116,6 +122,7 @@ public class PlaylistService {
         return null;
     }
 
+    @Override
     public void removeTrack(TrackOfPlaylistDto trackOfPlaylistDto) {
         trackOfPlaylistRepository.deleteById(trackOfPlaylistDto.getId());
     }

@@ -2,7 +2,7 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.PlaylistDto;
 import cz.upce.music.dto.TrackOfPlaylistDto;
-import cz.upce.music.service.PlaylistService;
+import cz.upce.music.service.implementations.PlaylistServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,9 +15,9 @@ import java.util.Map;
 @RestController
 public class PlaylistController {
 
-    private final PlaylistService playlistService;
+    private final PlaylistServiceImpl playlistService;
 
-    public PlaylistController(PlaylistService playlistService) {
+    public PlaylistController(PlaylistServiceImpl playlistService) {
         this.playlistService = playlistService;
     }
 
