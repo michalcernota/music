@@ -1,4 +1,4 @@
-package cz.upce.music.service;
+package cz.upce.music.service.interfaces;
 
 import cz.upce.music.dto.SignUpUserDto;
 import cz.upce.music.entity.User;

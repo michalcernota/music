@@ -1,9 +1,10 @@
-package cz.upce.music.service;
+package cz.upce.music.service.implementations;
 
 import cz.upce.music.dto.SignUpUserDto;
 import cz.upce.music.entity.User;
 import cz.upce.music.entity.UserRoleEnum;
 import cz.upce.music.repository.UserRepository;
+import cz.upce.music.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -2,7 +2,7 @@ package spock
 
 import cz.upce.music.entity.User
 import cz.upce.music.repository.UserRepository
-import cz.upce.music.service.UserService
+import cz.upce.music.service.interfaces.UserService
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback

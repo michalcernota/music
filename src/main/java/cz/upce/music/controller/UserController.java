@@ -2,8 +2,7 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.SignUpUserDto;
 import cz.upce.music.entity.User;
-import cz.upce.music.repository.UserRepository;
-import cz.upce.music.service.UserService;
+import cz.upce.music.service.interfaces.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -6,7 +6,7 @@ import cz.upce.music.entity.*;
 import cz.upce.music.repository.PlaylistRepository;
 import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.UsersPlaylistsRepository;
-import cz.upce.music.service.UserService;
+import cz.upce.music.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
