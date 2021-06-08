@@ -1,7 +1,7 @@
 package cz.upce.music.controller;
 
 import cz.upce.music.dto.TrackDto;
-import cz.upce.music.service.TrackService;
+import cz.upce.music.service.TrackServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ import java.util.List;
 @RestController
 public class TrackController {
 
-    private final TrackService trackService;
+    private final TrackServiceImpl trackService;
 
-    public TrackController(TrackService trackService) {
+    public TrackController(TrackServiceImpl trackService) {
         this.trackService = trackService;
     }
 

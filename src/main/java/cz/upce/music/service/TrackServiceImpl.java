@@ -7,6 +7,7 @@ import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
 import cz.upce.music.service.interfaces.FileService;
+import cz.upce.music.service.interfaces.TrackService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @Component
-public class TrackService {
+public class TrackServiceImpl implements TrackService {
 
     private final TrackRepository trackRepository;
 
@@ -32,7 +33,7 @@ public class TrackService {
 
     private final ArtistRepository artistRepository;
 
-    public TrackService(TrackRepository trackRepository, ModelMapper mapper, FileService fileService, TrackOfPlaylistRepository trackOfPlaylistRepository, ArtistRepository artistRepository) {
+    public TrackServiceImpl(TrackRepository trackRepository, ModelMapper mapper, FileService fileService, TrackOfPlaylistRepository trackOfPlaylistRepository, ArtistRepository artistRepository) {
         this.trackRepository = trackRepository;
         this.mapper = mapper;
         this.fileService = fileService;
@@ -40,6 +41,7 @@ public class TrackService {
         this.artistRepository = artistRepository;
     }
 
+    @Override
     public List<TrackDto> getAll() {
         List<Track> tracks = trackRepository.findAll();
         List<TrackDto> trackDtoList = mapper.map(tracks, new TypeToken<List<TrackDto>>(){}.getType());
@@ -55,6 +57,7 @@ public class TrackService {
         return trackDtoList;
     }
 
+    @Override
     public List<TrackDto> create(MultipartFile[] files, Long artistId) throws IOException {
 
         List<TrackDto> trackDtoList = new ArrayList<>();
@@ -85,6 +88,7 @@ public class TrackService {
         return null;
     }
 
+    @Override
     public TrackDto deleteTrackAndFile(Long id) throws IOException {
         Optional<Track> optionalTrack = trackRepository.findById(id);
         if (optionalTrack.isPresent()) {
@@ -100,6 +104,7 @@ public class TrackService {
         return null;
     }
 
+    @Override
     public TrackDto deleteTrack(Long id) {
         Optional<Track> optionalTrack = trackRepository.findById(id);
         if (optionalTrack.isPresent()) {
@@ -114,6 +119,7 @@ public class TrackService {
         return null;
     }
 
+    @Override
     public void deleteAllTracks() {
         List<Track> tracks = trackRepository.findAll();
         for (Track track: tracks) {
@@ -121,10 +127,12 @@ public class TrackService {
         }
     }
 
+    @Override
     public List<Track> findAll() {
         return trackRepository.findAll();
     }
 
+    @Override
     public Optional<Track> findTrackById(Long id) {
         return trackRepository.findById(id);
     }

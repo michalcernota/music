@@ -3,8 +3,7 @@ package cz.upce.music
 
 import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Track
-import cz.upce.music.repository.TrackRepository
-import cz.upce.music.service.TrackService
+import cz.upce.music.service.TrackServiceImpl
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner
 class TrackRepositoryGroovyTest {
 
     @Autowired
-    private TrackService trackService;
+    private TrackServiceImpl trackService;
 
     @Autowired
     private Creator creator;
