@@ -6,6 +6,7 @@ import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
+import cz.upce.music.service.interfaces.FileService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package cz.upce.music.service;
+package cz.upce.music.service.interfaces;
 
 import org.springframework.web.multipart.MultipartFile;
 

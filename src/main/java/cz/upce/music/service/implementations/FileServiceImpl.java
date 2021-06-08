@@ -1,5 +1,6 @@
-package cz.upce.music.service;
+package cz.upce.music.service.implementations;
 
+import cz.upce.music.service.interfaces.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
