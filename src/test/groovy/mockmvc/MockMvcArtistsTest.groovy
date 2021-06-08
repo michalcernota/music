@@ -2,7 +2,7 @@ package mockmvc
 
 import cz.upce.music.MusicApplication
 import cz.upce.music.entity.Artist
-import cz.upce.music.service.ArtistService
+import cz.upce.music.service.implementations.ArtistServiceImpl
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +26,7 @@ class MockMvcArtistsTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ArtistService artistService;
+    private ArtistServiceImpl artistService;
 
     @Test
     @WithAnonymousUser

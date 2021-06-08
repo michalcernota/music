@@ -3,7 +3,7 @@ package cz.upce.music.controller;
 import cz.upce.music.dto.ArtistDto;
 import cz.upce.music.entity.Artist;
 import cz.upce.music.repository.ArtistRepository;
-import cz.upce.music.service.ArtistService;
+import cz.upce.music.service.implementations.ArtistServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
@@ -25,9 +25,9 @@ public class ArtistController {
 
     private final ModelMapper mapper;
 
-    private final ArtistService artistService;
+    private final ArtistServiceImpl artistService;
 
-    public ArtistController(ArtistRepository artistRepository, ModelMapper modelMapper, ArtistService artistService) {
+    public ArtistController(ArtistRepository artistRepository, ModelMapper modelMapper, ArtistServiceImpl artistService) {
         this.artistRepository = artistRepository;
         this.mapper = modelMapper;
         this.artistService = artistService;
@@ -53,19 +53,17 @@ public class ArtistController {
 
     @Transactional
     @DeleteMapping(path = "/artists/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> removeArtist(@PathVariable Long id) {
-        Optional<Artist> optionalArtist = artistRepository.findById(id);
-
         try {
 
-            if (optionalArtist.isPresent()) {
-                Artist artistToRemove = optionalArtist.get();
-                artistService.delete(artistToRemove);
-
+            Artist artistToRemove = artistService.delete(id);
+            if (artistToRemove != null) {
                 return ResponseEntity.ok(mapper.map(artistToRemove, ArtistDto.class));
             }
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
+            else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found.");
+            }
 
         }
         catch (Exception exception) {
@@ -74,8 +72,8 @@ public class ArtistController {
     }
 
     @PostMapping(value = "/artists/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> uploadFile(@RequestParam Optional<MultipartFile> file, @RequestParam String name, @RequestParam String nationality) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> createArtist(@RequestParam Optional<MultipartFile> file, @RequestParam String name, @RequestParam String nationality) {
 
         try {
 

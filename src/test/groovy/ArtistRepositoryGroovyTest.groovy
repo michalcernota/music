@@ -2,7 +2,7 @@ package cz.upce.music
 
 import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Artist
-import cz.upce.music.service.ArtistService
+import cz.upce.music.service.implementations.ArtistServiceImpl
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner
 class ArtistRepositoryGroovyTest {
 
     @Autowired
-    private ArtistService artistService;
+    private ArtistServiceImpl artistService;
 
     @Autowired
     private Creator creator;
