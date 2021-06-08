@@ -64,4 +64,9 @@ public class UserServiceImpl implements UserService {
             throw new Exception("User with username " + signUpUserDto.getUsername() + " already exists.");
         }
     }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

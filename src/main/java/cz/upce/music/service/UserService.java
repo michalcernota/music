@@ -10,4 +10,6 @@ public interface UserService {
     User saveUser(User user);
 
     SignUpUserDto signUpUser(SignUpUserDto signUpUserDto) throws Exception;
+
+    User findUserByUsername(String name);
 }
