@@ -12,7 +12,7 @@ public interface TrackService {
 
     List<TrackDto> getAll();
 
-    List<TrackDto> create(MultipartFile[] files, Long artistId) throws IOException;
+    List<TrackDto> create(MultipartFile[] files, Long artistId) throws Exception;
 
     TrackDto deleteTrackAndFile(Long id) throws IOException;
 

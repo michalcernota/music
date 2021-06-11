@@ -1,5 +1,7 @@
 package cz.upce.music.dto;
 
+import java.util.List;
+
 public class ArtistDto {
 
     private Long id;
@@ -9,6 +11,8 @@ public class ArtistDto {
     private String nationality;
 
     private String pathToImage;
+
+    private List<TrackDto> tracks;
 
     public Long getId() {
         return id;
@@ -40,5 +44,13 @@ public class ArtistDto {
 
     public void setPathToImage(String pathToImage) {
         this.pathToImage = pathToImage;
+    }
+
+    public List<TrackDto> getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(List<TrackDto> tracks) {
+        this.tracks = tracks;
     }
 }

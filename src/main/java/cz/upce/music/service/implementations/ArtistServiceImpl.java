@@ -7,22 +7,19 @@ import cz.upce.music.entity.Track;
 import cz.upce.music.repository.ArtistRepository;
 import cz.upce.music.repository.TrackOfPlaylistRepository;
 import cz.upce.music.repository.TrackRepository;
-import cz.upce.music.service.interfaces.FileService;
 import cz.upce.music.service.interfaces.ArtistService;
+import cz.upce.music.service.interfaces.FileService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-@Component
 public class ArtistServiceImpl implements ArtistService {
 
     private final TrackRepository trackRepository;
@@ -52,8 +49,9 @@ public class ArtistServiceImpl implements ArtistService {
     public Optional<Artist> findById(Long id) { return artistRepository.findById(id); }
 
     @Override
-    public Map<String, Object> getArtistDetail(Long id) {
-        Map<String, Object> map = new HashMap<>();
+    public ArtistDto getArtistDetail(Long id) {
+        ArtistDto artistDto;
+
         Optional<Artist> optionalArtist = artistRepository.findById(id);
         if (optionalArtist.isPresent()) {
             Artist artist = optionalArtist.get();
@@ -61,16 +59,17 @@ public class ArtistServiceImpl implements ArtistService {
             List<TrackDto> trackDtoList = mapper.map(tracks, new TypeToken<List<TrackDto>>() {
             }.getType());
 
-            map.put("artist", mapper.map(artist, ArtistDto.class));
-            map.put("tracks", trackDtoList);
-            return map;
+            artistDto = mapper.map(artist, ArtistDto.class);
+            artistDto.setTracks(trackDtoList);
+            return artistDto;
         }
-
-        return null;
+        else {
+            throw new NoSuchElementException("Artist was not found.");
+        }
     }
 
     @Override
-    public Artist delete(Long id) throws Exception {
+    public Artist delete(Long id) {
         Optional<Artist> optionalArtist = artistRepository.findById(id);
 
         if (optionalArtist.isPresent()) {
@@ -79,23 +78,23 @@ public class ArtistServiceImpl implements ArtistService {
             List<Track> artistsTracks = trackRepository.findTracksByArtist_Id(artist.getId());
             for (Track track : artistsTracks) {
                 trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(track.getId());
-                fileService.deleteTrack(track.getPathToTrack());
+                fileService.deleteFile(track.getPathToTrack(), FileType.TRACK);
             }
 
             trackRepository.deleteTracksByArtist_Id(artist.getId());
             artistRepository.deleteById(artist.getId());
-            fileService.deleteImage(artist.getPathToImage());
+            fileService.deleteFile(artist.getPathToImage(), FileType.IMAGE);
 
             return artist;
         }
         else {
-            throw new Exception("Artist was not found");
+            throw new NoSuchElementException("Artist was not found");
         }
     }
 
     @Override
-    public Artist create(String name, String nationality, Optional<MultipartFile> image, long imageId) throws IOException {
-        String filePath = fileService.uploadImage(image, imageId);
+    public Artist create(String name, String nationality, MultipartFile image) throws IOException {
+        String filePath = fileService.uploadFile(image, FileType.IMAGE);
         Artist artist = new Artist();
         artist.setName(name);
         artist.setNationality(nationality);

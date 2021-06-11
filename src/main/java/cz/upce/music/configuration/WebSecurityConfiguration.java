@@ -55,7 +55,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // dont authenticate this particular request
                 .authorizeRequests().antMatchers("/authenticate").permitAll()
                 .antMatchers(HttpMethod.GET, "/artists").permitAll()
-                .antMatchers(HttpMethod.GET, "/artists/detail/{\\\\d+}").permitAll()
+                .antMatchers(HttpMethod.GET, "/artists/{\\\\d+}").permitAll()
                 .antMatchers(HttpMethod.GET, "/playlists").permitAll()
                 .antMatchers(HttpMethod.GET, "/playlists/{\\\\d+}").permitAll()
                 .antMatchers(HttpMethod.GET, "/tracks").permitAll()

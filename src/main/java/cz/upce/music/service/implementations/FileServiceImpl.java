@@ -9,36 +9,24 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.Date;
 
 @Service
 public class FileServiceImpl implements FileService {
     @Override
-    public String uploadTrack(MultipartFile file, long id) throws IOException {
-        String destination = "tracks/" + id + ".mp3";
-        file.transferTo(Paths.get(destination));
-
-        return ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path(destination)
-                .toUriString();
-    }
-
-    @Override
-    public boolean deleteTrack(String trackPath) throws IOException {
-        String fileName = trackPath.substring(trackPath.lastIndexOf('/') + 1);
-        File file = new File("tracks/" + fileName);
-        return file.delete();
-    }
-
-    @Override
-    public String uploadImage(Optional<MultipartFile> file, long id) throws IOException {
-        String destination = "images/" + id + ".png";
-
-        if (file.isPresent()) {
-            file.get().transferTo(Paths.get(destination));
-        } else {
-            Files.copy(Paths.get("images/default/artist.png"), Paths.get(destination));
+    public String uploadFile(MultipartFile file, FileType fileType) throws IOException {
+        String destination = "";
+        if (fileType == FileType.IMAGE) {
+            if (file != null) {
+                destination = "images/" + new Date().getTime() + ".png";
+                file.transferTo(Paths.get(destination));
+            } else {
+                Files.copy(Paths.get("images/default/artist.png"), Paths.get(destination));
+            }
+        }
+        else if (fileType == FileType.TRACK) {
+            destination = "tracks/" + new Date().getTime() + ".mp3";
+            file.transferTo(Paths.get(destination));
         }
 
         return ServletUriComponentsBuilder
@@ -48,9 +36,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean deleteImage(String imagePath) {
-        String fileName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
-        File file = new File("images/" + fileName);
+    public boolean deleteFile(String filePath, FileType fileType) {
+        String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+        String relativeFilePath = "";
+
+        if (fileType == FileType.IMAGE) {
+            relativeFilePath = "images/" + fileName;
+        }
+        else if (fileType == FileType.TRACK) {
+            relativeFilePath = "tracks/" + fileName;
+        }
+
+        File file = new File(relativeFilePath);
         return file.delete();
     }
 }

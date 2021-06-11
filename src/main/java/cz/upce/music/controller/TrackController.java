@@ -59,6 +59,8 @@ public class TrackController {
 
         } catch (IOException exception) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error while creating a track.");
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
         }
     }
 }

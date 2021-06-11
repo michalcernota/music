@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -58,20 +59,14 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public List<TrackDto> create(MultipartFile[] files, Long artistId) throws IOException {
+    public List<TrackDto> create(MultipartFile[] files, Long artistId) throws Exception {
 
         List<TrackDto> trackDtoList = new ArrayList<>();
         Optional<Artist> optionalArtist = artistRepository.findById(artistId);
 
         if (optionalArtist.isPresent()) {
-            long trackId = 0;
-            Optional<Long> optionalTrackId = trackRepository.getMaxId();
-            if (optionalTrackId.isPresent()) {
-                trackId = optionalTrackId.get();
-            }
-
             for (MultipartFile file : files) {
-                String trackPath = fileService.uploadTrack(file, trackId++);
+                String trackPath = fileService.uploadFile(file, FileType.TRACK);
 
                 Track track = new Track();
                 track.setArtist(optionalArtist.get());
@@ -85,7 +80,7 @@ public class TrackServiceImpl implements TrackService {
             return trackDtoList;
         }
 
-        return null;
+        throw new NoSuchElementException("Artist was not found.");
     }
 
     @Override
@@ -96,12 +91,12 @@ public class TrackServiceImpl implements TrackService {
 
             trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
             trackRepository.deleteById(id);
-            fileService.deleteTrack(trackToDelete.getPathToTrack());
+            fileService.deleteFile(trackToDelete.getPathToTrack(), FileType.TRACK);
 
             return mapper.map(trackToDelete, TrackDto.class);
         }
 
-        return null;
+        throw new NoSuchElementException("Track was not found.");
     }
 
     @Override
