@@ -10,18 +10,15 @@ import cz.upce.music.service.interfaces.FileService;
 import cz.upce.music.service.interfaces.TrackService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-@Component
 public class TrackServiceImpl implements TrackService {
 
     private final TrackRepository trackRepository;
@@ -84,7 +81,7 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public TrackDto deleteTrackAndFile(Long id) throws IOException {
+    public TrackDto deleteTrackAndFile(Long id) {
         Optional<Track> optionalTrack = trackRepository.findById(id);
         if (optionalTrack.isPresent()) {
             Track trackToDelete = optionalTrack.get();
@@ -100,18 +97,14 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public TrackDto deleteTrack(Long id) {
-        Optional<Track> optionalTrack = trackRepository.findById(id);
-        if (optionalTrack.isPresent()) {
-            Track trackToDelete = optionalTrack.get();
-
+    public void deleteTrack(Long id) {
+        if (trackRepository.findById(id).isPresent()) {
             trackOfPlaylistRepository.deleteTrackOfPlaylistsByTrack_Id(id);
             trackRepository.deleteById(id);
-
-            return mapper.map(trackToDelete, TrackDto.class);
+            return;
         }
 
-        return null;
+        throw new NoSuchElementException("Track was not found.");
     }
 
     @Override
@@ -125,10 +118,5 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public List<Track> findAll() {
         return trackRepository.findAll();
-    }
-
-    @Override
-    public Optional<Track> findTrackById(Long id) {
-        return trackRepository.findById(id);
     }
 }

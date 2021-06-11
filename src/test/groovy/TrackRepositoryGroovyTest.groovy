@@ -3,7 +3,9 @@ package cz.upce.music
 
 import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Track
+import cz.upce.music.repository.TrackRepository
 import cz.upce.music.service.implementations.TrackServiceImpl
+import cz.upce.music.service.interfaces.TrackService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,7 +23,10 @@ import org.springframework.test.context.junit4.SpringRunner
 class TrackRepositoryGroovyTest {
 
     @Autowired
-    private TrackServiceImpl trackService;
+    private TrackService trackService;
+
+    @Autowired
+    private TrackRepository trackRepository;
 
     @Autowired
     private Creator creator;
@@ -38,7 +43,7 @@ class TrackRepositoryGroovyTest {
         List<Track> all = trackService.findAll();
         Assertions.assertThat(all.size()).isEqualTo(1);
 
-        Track fromDb = trackService.findTrackById(track.getId()).get();
+        Track fromDb = trackRepository.findById(track.getId()).get();
         Assertions.assertThat(fromDb.getName()).isEqualTo("Track");
         Assertions.assertThat(fromDb.getPathToTrack()).isEqualTo("Test pathToTrack");
 

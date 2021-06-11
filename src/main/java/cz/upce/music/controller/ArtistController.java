@@ -30,9 +30,9 @@ public class ArtistController {
     }
 
     @GetMapping("/artists")
-    public List<ArtistDto> getAllArtists() {
+    public ResponseEntity<?> getAllArtists() {
         List<Artist> artists = artistService.getAll();
-        return mapper.map(artists, new TypeToken<List<ArtistDto>>(){}.getType());
+        return ResponseEntity.ok(mapper.map(artists, new TypeToken<List<ArtistDto>>(){}.getType()));
     }
 
     @GetMapping("/artists/{id}")

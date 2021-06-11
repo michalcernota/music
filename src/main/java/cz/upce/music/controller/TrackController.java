@@ -1,7 +1,7 @@
 package cz.upce.music.controller;
 
 import cz.upce.music.dto.TrackDto;
-import cz.upce.music.service.implementations.TrackServiceImpl;
+import cz.upce.music.service.interfaces.TrackService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,58 +9,42 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
 public class TrackController {
 
-    private final TrackServiceImpl trackService;
+    private final TrackService trackService;
 
-    public TrackController(TrackServiceImpl trackService) {
+    public TrackController(TrackService trackService) {
         this.trackService = trackService;
     }
 
     @GetMapping("/tracks")
-    public List<TrackDto> showAllTracks() {
-        return trackService.getAll();
+    public ResponseEntity<?> showAllTracks() {
+        return ResponseEntity.ok(trackService.getAll());
     }
 
     @Transactional
-    @DeleteMapping("/tracks/remove/{id}")
-    public ResponseEntity<?> removeTrack(@PathVariable Long id) {
+    @DeleteMapping("/tracks/{id}")
+    public ResponseEntity<?> deleteTrack(@PathVariable Long id) {
         try {
-
             TrackDto deletedTrack = trackService.deleteTrackAndFile(id);
-            if (deletedTrack != null) {
-                return ResponseEntity.ok(deletedTrack);
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
-            }
-
+            return ResponseEntity.ok(deletedTrack);
         }
-        catch (IOException exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error while deleting a track.");
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
     @PostMapping(path = "/tracks/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addTrack(@RequestParam MultipartFile[] files, @RequestParam Long artistId) {
+    public ResponseEntity<?> createTrack(@RequestParam MultipartFile[] files, @RequestParam Long artistId) {
         try {
-
             List<TrackDto> newTracks = trackService.create(files, artistId);
-
-            if (newTracks != null) {
-                return ResponseEntity.ok(newTracks);
-            }
-            else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
-            }
-
-        } catch (IOException exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error while creating a track.");
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+            return ResponseEntity.ok(newTracks);
+        }
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RestController
 public class PlaylistController {
@@ -21,8 +20,8 @@ public class PlaylistController {
     }
 
     @GetMapping("/playlists")
-    public List<PlaylistDto> getAllPlaylists() {
-        return playlistService.getAll();
+    public ResponseEntity<?> getAllPlaylists() {
+        return ResponseEntity.ok(playlistService.getAll());
     }
 
     @PostMapping("/playlists")
