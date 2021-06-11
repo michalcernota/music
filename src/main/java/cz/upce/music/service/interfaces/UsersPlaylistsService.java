@@ -1,18 +1,17 @@
 package cz.upce.music.service.interfaces;
 
 import cz.upce.music.dto.TrackDto;
-import cz.upce.music.entity.Track;
-import cz.upce.music.entity.UsersPlaylist;
+import cz.upce.music.dto.UsersPlaylistDto;
 
 import java.util.List;
 
 public interface UsersPlaylistsService {
 
-    UsersPlaylist addPlaylistsToMyPlaylists(Long playlistId);
+    UsersPlaylistDto addToMyPlaylists(Long playlistId);
 
-    List<UsersPlaylist> getMyPlaylists();
+    List<UsersPlaylistDto> getMyPlaylists();
 
-    UsersPlaylist removeFromMyPlaylists(Long playlistId);
+    UsersPlaylistDto removeFromMyPlaylists(Long playlistId);
 
-    List<TrackDto> getTracks(Long playlistId);
+    List<TrackDto> getTracksOfPlaylist(Long playlistId);
 }

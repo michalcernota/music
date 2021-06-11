@@ -2,68 +2,57 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.TrackDto;
 import cz.upce.music.dto.UsersPlaylistDto;
-import cz.upce.music.entity.UsersPlaylist;
 import cz.upce.music.service.interfaces.UsersPlaylistsService;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Type;
 import java.util.List;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 public class UsersPlaylistsController {
 
-    private final ModelMapper mapper;
-
     private final UsersPlaylistsService usersPlaylistsService;
 
-    public UsersPlaylistsController(ModelMapper mapper, UsersPlaylistsService usersPlaylistsService) {
-        this.mapper = mapper;
+    public UsersPlaylistsController(UsersPlaylistsService usersPlaylistsService) {
         this.usersPlaylistsService = usersPlaylistsService;
     }
 
-    @PostMapping("/usersPlaylists/add/{playlistId}")
-    public ResponseEntity<?> addPlaylistsToMyPlaylists(@PathVariable Long playlistId) {
-        UsersPlaylist usersPlaylist = usersPlaylistsService.addPlaylistsToMyPlaylists(playlistId);
-        if (usersPlaylist != null) {
-            return ResponseEntity.ok(mapper.map(usersPlaylist, UsersPlaylistDto.class));
+    @PostMapping("/user/playlists/{playlistId}")
+    public ResponseEntity<?> addToMyPlaylists(@PathVariable Long playlistId) {
+        try {
+            UsersPlaylistDto usersPlaylist = usersPlaylistsService.addToMyPlaylists(playlistId);
+            return ResponseEntity.ok(usersPlaylist);
         }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found.");
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
-    @GetMapping("/usersPlaylists")
+    @GetMapping("/user/playlists")
     public ResponseEntity<?> getMyPlaylists() {
-        List<UsersPlaylist> usersPlaylists = usersPlaylistsService.getMyPlaylists();
-
-        Type listType = new TypeToken<List<UsersPlaylistDto>>(){}.getType();
-        List<UsersPlaylistDto> dtoList = mapper.map(usersPlaylists, listType);
-
-        return ResponseEntity.ok(dtoList);
+        List<UsersPlaylistDto> usersPlaylistDtoList = usersPlaylistsService.getMyPlaylists();
+        return ResponseEntity.ok(usersPlaylistDtoList);
     }
 
     @Transactional
-    @DeleteMapping("/usersPlaylists/remove/{id}")
+    @DeleteMapping("/user/playlists/{id}")
     public ResponseEntity<?> removeFromMyPlaylists(@PathVariable Long id) {
-        UsersPlaylist removed = usersPlaylistsService.removeFromMyPlaylists(id);
-        if (removed != null) {
-            return ResponseEntity.ok(mapper.map(removed, UsersPlaylistDto.class));
+        try {
+            UsersPlaylistDto usersPlaylistDto = usersPlaylistsService.removeFromMyPlaylists(id);
+            return ResponseEntity.ok(usersPlaylistDto);
         }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found.");
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
-    @GetMapping("/usersPlaylists/{id}/tracks")
+    @GetMapping("/user/playlists/{id}")
     public ResponseEntity<?> getTracks(@PathVariable Long id) {
-        List<TrackDto> tracks = usersPlaylistsService.getTracks(id);
+        List<TrackDto> tracks = usersPlaylistsService.getTracksOfPlaylist(id);
         if (tracks != null) {
             return ResponseEntity.ok(tracks);
         }

@@ -9,14 +9,10 @@ import cz.upce.music.repository.UsersPlaylistsRepository;
 import cz.upce.music.service.interfaces.UserService;
 import cz.upce.music.service.interfaces.UsersPlaylistsService;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
@@ -40,12 +36,12 @@ public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
     }
 
     @Override
-    public UsersPlaylist addPlaylistsToMyPlaylists(Long playlistId) {
+    public UsersPlaylistDto addToMyPlaylists(Long playlistId) {
         User user = userService.getLoggedUser();
 
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
         if (!optionalPlaylist.isPresent() || user == null) {
-            return null;
+            throw new NoSuchElementException("Playlist was not found.");
         }
 
         Playlist playlist = optionalPlaylist.get();
@@ -53,31 +49,31 @@ public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
         UsersPlaylist usersPlaylist = new UsersPlaylist();
         usersPlaylist.setUser(user);
         usersPlaylist.setPlaylist(playlist);
-        UsersPlaylist result = usersPlaylistsRepository.save(usersPlaylist);
 
-        return result;
+        return mapper.map(usersPlaylistsRepository.save(usersPlaylist), UsersPlaylistDto.class);
     }
 
     @Override
-    public List<UsersPlaylist> getMyPlaylists() {
+    public List<UsersPlaylistDto> getMyPlaylists() {
         User user = userService.getLoggedUser();
         List<UsersPlaylist> usersPlaylists = usersPlaylistsRepository.findAllByUser_Id(user.getId());
-        return usersPlaylists;
+        return mapper.map(usersPlaylists, new TypeToken<List<UsersPlaylistDto>>(){}.getType());
     }
 
     @Override
-    public UsersPlaylist removeFromMyPlaylists(Long playlistId) {
+    public UsersPlaylistDto removeFromMyPlaylists(Long playlistId) {
         Optional<UsersPlaylist> usersPlaylistOptional = usersPlaylistsRepository.findById(playlistId);
         if (!usersPlaylistOptional.isPresent()) {
-            return null;
+            throw new NoSuchElementException("Playlist was not found.");
         }
 
         usersPlaylistsRepository.deleteById(playlistId);
-        return usersPlaylistOptional.get();
+        UsersPlaylist usersPlaylist = usersPlaylistOptional.get();
+        return mapper.map(usersPlaylist, UsersPlaylistDto.class);
     }
 
     @Override
-    public List<TrackDto> getTracks(Long playlistId) {
+    public List<TrackDto> getTracksOfPlaylist(Long playlistId) {
         Optional<UsersPlaylist> optionalUsersPlaylist = usersPlaylistsRepository.findById(playlistId);
         if (optionalUsersPlaylist.isPresent()) {
             UsersPlaylist usersPlaylist = optionalUsersPlaylist.get();
@@ -94,6 +90,6 @@ public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
             return tracks;
         }
 
-        return null;
+        throw new NoSuchElementException("Playlist was not found.");
     }
 }
