@@ -2,7 +2,7 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.PlaylistDto;
 import cz.upce.music.dto.TrackOfPlaylistDto;
-import cz.upce.music.service.implementations.PlaylistServiceImpl;
+import cz.upce.music.service.interfaces.PlaylistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,64 +10,64 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class PlaylistController {
 
-    private final PlaylistServiceImpl playlistService;
+    private final PlaylistService playlistService;
 
-    public PlaylistController(PlaylistServiceImpl playlistService) {
+    public PlaylistController(PlaylistService playlistService) {
         this.playlistService = playlistService;
     }
 
     @GetMapping("/playlists")
-    public List<PlaylistDto> viewPlaylists() {
+    public List<PlaylistDto> getAllPlaylists() {
         return playlistService.getAll();
     }
 
-    @PostMapping("/playlists/add")
+    @PostMapping("/playlists")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> addNewPlaylist(@RequestBody PlaylistDto playlistDto) {
+    public ResponseEntity<?> createPlaylist(@RequestBody PlaylistDto playlistDto) {
         PlaylistDto result = playlistService.create(playlistDto);
         return ResponseEntity.ok(result);
     }
 
     @Transactional
-    @DeleteMapping("/playlists/delete/{id}")
+    @DeleteMapping("/playlists/{id}")
     public ResponseEntity<?> deletePlaylist(@PathVariable Long id) {
-        if (playlistService.delete(id)) {
+        try {
+            playlistService.delete(id);
             return ResponseEntity.ok().build();
         }
-        else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
     @GetMapping("/playlists/{id}")
-    public ResponseEntity<?> showPlaylistDetail(@PathVariable Long id) {
-        Map<String, Object> map = playlistService.getPlaylistDetail(id);
-        if (map != null) {
-            return ResponseEntity.ok(map);
+    public ResponseEntity<?> getPlaylistDetail(@PathVariable Long id) {
+        try {
+            PlaylistDto playlistDto = playlistService.getPlaylistDetail(id);
+            return ResponseEntity.ok(playlistDto);
         }
-        else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
-    @PostMapping("/playlists/addTrack")
+    @PostMapping("/playlists/tracks")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> addTrackToPlaylist(@RequestBody TrackOfPlaylistDto trackOfPlaylistDto) {
-        TrackOfPlaylistDto result = playlistService.addTrackToPlaylist(trackOfPlaylistDto);
-        if (result != null) {
-            return ResponseEntity.ok(trackOfPlaylistDto);
+        try {
+            TrackOfPlaylistDto result = playlistService.addTrackToPlaylist(trackOfPlaylistDto);
+            return ResponseEntity.ok(result);
         }
-        else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not found.");
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
-    @DeleteMapping("/playlists/deleteTrack")
+    @DeleteMapping("/playlists/tracks")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> removeTrackFromPlaylist(@RequestBody TrackOfPlaylistDto trackOfPlaylistDto) throws Exception {
         playlistService.removeTrack(trackOfPlaylistDto);

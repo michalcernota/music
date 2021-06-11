@@ -66,26 +66,22 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         if (playlistRepository.findById(id).isPresent()) {
             usersPlaylistsRepository.deleteUsersPlaylistsByPlaylist_Id(id);
             trackOfPlaylistRepository.deleteTrackOfPlaylistsByPlaylist_Id(id);
             playlistRepository.deleteById(id);
+            return;
+        }
 
-            return true;
-        }
-        else {
-            return false;
-        }
+        throw new NoSuchElementException("Playlist was not found.");
     }
 
     @Override
-    public Map<String, Object> getPlaylistDetail(Long id) {
-        Map<String, Object> map = new HashMap<>();
-
+    public PlaylistDto getPlaylistDetail(Long id) {
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
         if (!optionalPlaylist.isPresent()) {
-            return null;
+            throw new NoSuchElementException("Playlist was not found.");
         }
 
         Playlist playlist = optionalPlaylist.get();
@@ -96,12 +92,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         PlaylistDto playlistDto = mapper.map(playlist, PlaylistDto.class);
         playlistDto.setOwnerName(playlist.getOwner().getUsername());
+        playlistDto.setTracksOfPlaylist(dtoList);
+        playlistDto.setTracksCount(dtoList.size());
 
-        map.put("playlist", playlistDto);
-        map.put("tracksCount", dtoList.size());
-        map.put("tracksOfPlaylist", dtoList);
-
-        return map;
+        return playlistDto;
     }
 
     @Override
@@ -119,7 +113,7 @@ public class PlaylistServiceImpl implements PlaylistService {
             return trackOfPlaylistDto;
         }
 
-        return null;
+        throw new NoSuchElementException("Playlist or Track was not found.");
     }
 
     @Override

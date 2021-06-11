@@ -1,5 +1,7 @@
 package cz.upce.music.dto;
 
+import java.util.List;
+
 public class PlaylistDto {
 
     private Long id;
@@ -7,6 +9,10 @@ public class PlaylistDto {
     private String name;
 
     private String ownerName;
+
+    private List<TrackOfPlaylistDto> tracksOfPlaylist;
+
+    private int tracksCount;
 
     public Long getId() {
         return id;
@@ -30,5 +36,21 @@ public class PlaylistDto {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
+    }
+
+    public List<TrackOfPlaylistDto> getTracksOfPlaylist() {
+        return tracksOfPlaylist;
+    }
+
+    public void setTracksOfPlaylist(List<TrackOfPlaylistDto> tracksOfPlaylist) {
+        this.tracksOfPlaylist = tracksOfPlaylist;
+    }
+
+    public int getTracksCount() {
+        return tracksCount;
+    }
+
+    public void setTracksCount(int tracksCount) {
+        this.tracksCount = tracksCount;
     }
 }
