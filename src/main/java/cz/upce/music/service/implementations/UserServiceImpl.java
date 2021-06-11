@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import javax.persistence.EntityExistsException;
 import java.time.LocalDateTime;
 
 @Service
@@ -39,8 +40,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-
         user.setPassword(encodedPassword);
+
         return userRepository.save(user);
     }
 
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public SignUpUserDto signUpUser(SignUpUserDto signUpUserDto) throws Exception {
         if (userRepository.findUserByUsername(signUpUserDto.getUsername()) == null) {
             if (!signUpUserDto.getPassword().equals(signUpUserDto.getRepeatPassword())) {
-                throw new Exception("Passwords does not match.");
+                throw new SecurityException("Passwords does not match.");
             }
 
             User user = new User();
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
             return mapper.map(newUser, SignUpUserDto.class);
         }
         else {
-            throw new Exception("User with username " + signUpUserDto.getUsername() + " already exists.");
+            throw new EntityExistsException("User with username " + signUpUserDto.getUsername() + " already exists.");
         }
     }
 

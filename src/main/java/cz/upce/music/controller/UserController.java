@@ -22,30 +22,23 @@ public class UserController {
     }
 
     @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> processSignupUser(@RequestBody SignUpUserDto signUpUserDto) {
+    public ResponseEntity<?> signup(@RequestBody SignUpUserDto signUpUserDto) {
         try {
             SignUpUserDto newUser = userService.signUpUser(signUpUserDto);
             return ResponseEntity.ok(newUser);
-        }
-        catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
-    @GetMapping("/userInfo/{username}")
+    @GetMapping("/user/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getUserRoles(@PathVariable String username) {
-        try {
-            User user = userService.findUserByUsername(username);
-            if (user != null) {
-                return ResponseEntity.ok(user.getUserRole());
-            }
-            else {
-                throw new Exception("User was not found");
-            }
-        }
-        catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+        User user = userService.findUserByUsername(username);
+        if (user != null) {
+            return ResponseEntity.ok(user.getUserRole());
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User was not found.");
         }
     }
 }
