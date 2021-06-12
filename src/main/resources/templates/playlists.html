@@ -7,9 +7,15 @@
 <div th:replace="fragments/navigation ::navbar"></div>
 
 <section>
+    <h2>Playlists</h2>
+
     <div th:each="playlist : ${playlists}">
         <a th:href="@{/playlist-detail/{id} (id=${playlist.id})}"><h3 th:text="${playlist.name}"></h3></a>
+        <a th:href="@{/playlist-detail/{id}/add-to-my-playlists (id=${playlist.id})}">Add to my playlists</a>
     </div>
+
+    <a th:href="@{'/playlist-form'}">Create new playlist</a>
+
 </section>
 </body>
 </html>

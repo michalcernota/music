@@ -18,6 +18,9 @@ public class Playlist {
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylist;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private User owner;
+
     public Long getId() {
         return id;
     }
@@ -48,5 +51,13 @@ public class Playlist {
 
     public void setTrackOfPlaylist(Set<TrackOfPlaylist> trackOfPlaylist) {
         this.trackOfPlaylist = trackOfPlaylist;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

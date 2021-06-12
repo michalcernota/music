@@ -4,16 +4,19 @@ import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -27,12 +30,6 @@ class MusicApplicationTests {
     private ArtistRepository artistRepository;
 
     @Autowired
-    private AlbumRepository albumRepository;
-
-    @Autowired
-    private PlayedRepository playedRepository;
-
-    @Autowired
     private TrackOfPlaylistRepository trackOfPlaylistRepository;
 
     @Autowired
@@ -43,6 +40,16 @@ class MusicApplicationTests {
 
     @Autowired
     private UsersPlaylistsRepository usersPlaylistsRepository;
+
+    @BeforeEach
+    void removeAll() {
+        trackOfPlaylistRepository.deleteAll();
+        trackRepository.deleteAll();
+        artistRepository.deleteAll();
+        usersPlaylistsRepository.deleteAll();
+        playlistRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     void saveArtistTest() {
@@ -95,42 +102,40 @@ class MusicApplicationTests {
         artist.setName("Kiss");
         artistRepository.save(artist);
 
-        Album album = new Album();
-        album.setArtist(artist);
-        album.setName("Creatures of the Night");
-        albumRepository.save(album);
-
         Track track = new Track();
         track.setName("I Love it Loud");
-        track.setAlbum(album);
         track.setArtist(artist);
+        track.setPathToTrack("");
         trackRepository.save(track);
 
-        Played played = new Played();
-        played.setTimestamp(LocalDateTime.now());
-        played.setTrack(track);
-        playedRepository.save(played);
-
         Assertions.assertThat(artistRepository.count()).isGreaterThan(0);
-        Assertions.assertThat(albumRepository.count()).isGreaterThan(0);
-        Assertions.assertThat(playedRepository.count()).isGreaterThan(0);
     }
 
     @Test
     void tracksByTypeTest() {
+        Artist artist = new Artist();
+        artist.setName("Artist");
+        artistRepository.save(artist);
+
         Track one = new Track();
         one.setName("Don't stop me now");
         one.setTrackType(TrackEnum.ROCK);
+        one.setPathToTrack("");
+        one.setArtist(artist);
         trackRepository.save(one);
 
         Track two = new Track();
         two.setName("It was a heat of the moment");
         two.setTrackType(TrackEnum.ROCK);
+        two.setPathToTrack("");
+        two.setArtist(artist);
         trackRepository.save(two);
 
         Track three = new Track();
         three.setName("Diamonds");
         three.setTrackType(TrackEnum.POP);
+        three.setPathToTrack("");
+        three.setArtist(artist);
         trackRepository.save(three);
 
         List<Track> rockTracks = trackRepository.findTrackByTrackTypeIs(TrackEnum.ROCK);
@@ -160,24 +165,31 @@ class MusicApplicationTests {
     @Test
     public void playlistTest() {
         User user  = new User();
-        user.setUsername("michal");
+        user.setUsername("userx");
         user.setPassword("heslo");
         user.setRegistrationDate(LocalDateTime.now());
 
         Playlist playlist = new Playlist();
         playlist.setName("my playlist");
+        playlist.setOwner(user);
 
         UsersPlaylist usersPlaylist = new UsersPlaylist();
         usersPlaylist.setUser(user);
         usersPlaylist.setPlaylist(playlist);
 
+        Artist artist = new Artist();
+        artist.setName("Artist");
+
         Track track = new Track();
         track.setName("track");
+        track.setPathToTrack("");
+        track.setArtist(artist);
 
         TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
         trackOfPlaylist.setPlaylist(playlist);
         trackOfPlaylist.setTrack(track);
 
+        artistRepository.save(artist);
         userRepository.save(user);
         trackRepository.save(track);
         playlistRepository.save(playlist);
@@ -190,4 +202,91 @@ class MusicApplicationTests {
         Assert.assertEquals(1, trackOfPlaylistRepository.findAll().size());
         Assert.assertEquals(1, usersPlaylistsRepository.findAll().size());
     }
+
+    @Test
+    public void passwordEncryptionDecryptionTest() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        User user = new User();
+        user.setUsername("userx");
+        user.setPassword(bCryptPasswordEncoder.encode("password"));
+
+        userRepository.save(user);
+
+        String anotherPassword = "password";
+        String anotherPasswordEncoded = bCryptPasswordEncoder.encode(anotherPassword);
+
+        boolean matches = bCryptPasswordEncoder.matches(userRepository.findUserByUsername("userx").getPassword(), anotherPasswordEncoded);
+
+        Assertions.assertThat(matches);
+    }
+
+    @Test
+    public void tracksNotInPlaylistTest() {
+        Artist artist = new Artist();
+        artist.setName("Artist");
+        artistRepository.save(artist);
+
+        Track trackOne = new Track();
+        trackOne.setPathToTrack("");
+        trackOne.setName("track one");
+        trackOne.setArtist(artist);
+
+        Track trackTwo = new Track();
+        trackTwo.setPathToTrack("");
+        trackTwo.setName("track two");
+        trackTwo.setArtist(artist);
+
+        Track trackThree = new Track();
+        trackThree.setPathToTrack("");
+        trackThree.setName("track three");
+        trackThree.setArtist(artist);
+
+        trackRepository.save(trackOne);
+        trackRepository.save(trackTwo);
+        trackRepository.save(trackThree);
+
+        User user = new User();
+        user.setUsername("userx");
+        user.setPassword("user");
+        userRepository.save(user);
+
+        Playlist playlist = new Playlist();
+        playlist.setName("playlist");
+        playlist.setOwner(user);
+        playlistRepository.save(playlist);
+
+        TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
+        trackOfPlaylist.setTrack(trackOne);
+        trackOfPlaylist.setPlaylist(playlist);
+        trackOfPlaylistRepository.save(trackOfPlaylist);
+
+        Set<Long> ids = trackOfPlaylistRepository.getAllTrackIds();
+        Assertions.assertThat(ids.size() == 1);
+
+        List<Track> tracksNotInPlaylist = trackRepository.findTracksByIdIsNotIn(ids);
+        Assertions.assertThat(tracksNotInPlaylist.size() == 2);
+    }
+
+    @Test
+    public void deleteArtistTest() {
+        Artist artist = new Artist();
+        artist.setName("artist");
+
+        Track track = new Track();
+        track.setName("track");
+        track.setPathToTrack("");
+        track.setArtist(artist);
+
+        artistRepository.save(artist);
+        trackRepository.save(track);
+
+        trackRepository.deleteTracksByArtist_Id(artist.getId());
+        artistRepository.delete(artist);
+
+        Assertions.assertThatNoException();
+        Assertions.assertThat(artistRepository.count() == 0);
+        Assertions.assertThat(trackRepository.count() == 0);
+    }
+
 }

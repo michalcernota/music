@@ -10,10 +10,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String username;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String password;
 
     @Column(length = 30)
@@ -27,7 +27,10 @@ public class User {
 
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
-    private UserRoleEnum userRole = UserRoleEnum.User;
+    private UserRoleEnum userRole = UserRoleEnum.ROLE_USER;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private Set<Playlist> playlistsOwnedByUser;
 
     public Long getId() {
         return id;
@@ -83,5 +86,13 @@ public class User {
 
     public void setUserRole(UserRoleEnum userRole) {
         this.userRole = userRole;
+    }
+
+    public Set<Playlist> getPlaylistsOwnedByUser() {
+        return playlistsOwnedByUser;
+    }
+
+    public void setPlaylistsOwnedByUser(Set<Playlist> playlistsOwnedByUser) {
+        this.playlistsOwnedByUser = playlistsOwnedByUser;
     }
 }

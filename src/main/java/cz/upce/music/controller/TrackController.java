@@ -1,65 +1,50 @@
 package cz.upce.music.controller;
 
-import cz.upce.music.dto.AddOrEditTrackDto;
-import cz.upce.music.entity.Track;
-import cz.upce.music.repository.TrackRepository;
-import cz.upce.music.service.FileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import cz.upce.music.dto.TrackDto;
+import cz.upce.music.service.interfaces.TrackService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@Controller
+import javax.transaction.Transactional;
+import java.util.List;
+
+@RestController
 public class TrackController {
-    @Autowired
-    private TrackRepository trackRepository;
 
-    @Autowired
-    private FileService fileService;
+    private final TrackService trackService;
 
-    @ExceptionHandler(RuntimeException.class)
-    public String handlerException() {
-        return "error";
+    public TrackController(TrackService trackService) {
+        this.trackService = trackService;
     }
 
-    @GetMapping("/")
-    public String showAllTracks(Model model) {
-        model.addAttribute("trackList", trackRepository.findAll());
-        return "track-list";
+    @GetMapping("/tracks")
+    public ResponseEntity<?> showAllTracks() {
+        return ResponseEntity.ok(trackService.getAll());
     }
 
-    @GetMapping("/track-detail/{id}")
-    public String showTrackDetail(@PathVariable(required = false) Long id, Model model) {
-        model.addAttribute("track", trackRepository.findById(id).get());
-        return "track-detail";
-    }
-
-    @GetMapping(value = {"/track-form", "/track-form/{id}"})
-    public String showTrackForm(@PathVariable(required = false) Long id, Model model) {
-        if (id != null) {
-            Track byId = trackRepository.findById(id).orElse(new Track());
-
-            AddOrEditTrackDto dto = new AddOrEditTrackDto();
-            dto.setId(byId.getId());
-            dto.setName(byId.getName());
-
-            model.addAttribute("track", dto);
-        } else {
-            model.addAttribute("track", new AddOrEditTrackDto());
+    @Transactional
+    @DeleteMapping("/tracks/{id}")
+    public ResponseEntity<?> deleteTrack(@PathVariable Long id) {
+        try {
+            TrackDto deletedTrack = trackService.deleteTrackAndFile(id);
+            return ResponseEntity.ok(deletedTrack);
         }
-        return "track-form";
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
     }
 
-    @PostMapping("/track-form-process")
-    public String trackFormProcess(AddOrEditTrackDto addTrackDto) {
-        Track track = new Track();
-        track.setId(addTrackDto.getId());
-        track.setName(addTrackDto.getName());
-
-        String trackPath = fileService.uploadTrack(addTrackDto.getTrack());
-        track.setPathToTrack(trackPath);
-
-        trackRepository.save(track);
-        return "redirect:/";
+    @PostMapping(path = "/tracks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createTrack(@RequestParam MultipartFile[] files, @RequestParam Long artistId) {
+        try {
+            List<TrackDto> newTracks = trackService.create(files, artistId);
+            return ResponseEntity.ok(newTracks);
+        }
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
     }
 }

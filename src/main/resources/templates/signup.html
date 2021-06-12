@@ -11,10 +11,14 @@
     <div>
         <form action="#" th:action="@{/signup-form-process}" th:object="${user}" method="post">
             <input type="hidden" th:field="*{id}" />
-            <input type="text" th:field="*{userName}" />
-            <input type="password" th:field="*{password}" />
-            <input type="password" th:field="*{repeatPassword}" />
-            <input type="email" th:field="*{email}" />
+            <label for="username">Username</label>
+            <input id="username" type="text" th:field="*{username}" />
+            <label for="password">Password</label>
+            <input id="password" type="password" th:field="*{password}" />
+            <label for="confirmPassword">Confirm password</label>
+            <input id="confirmPassword" type="password" th:field="*{repeatPassword}" />
+            <label for="email">Email</label>
+            <input id="email" type="email" th:field="*{emailAddress}" />
             <input th:type="submit" />
         </form>
     </div>

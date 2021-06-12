@@ -5,32 +5,24 @@ import java.util.Set;
 
 @Entity
 public class Track {
-    // TODO: udělat sloupec data not null (až přijdu na to jak ukládat data)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Artist artist;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Album album;
 
     @Column(length = 20)
     @Enumerated(EnumType.STRING)
     private TrackEnum trackType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
     private String pathToTrack;
-
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
-    private Set<Played> played;
 
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private Set<TrackOfPlaylist> trackOfPlaylists;
 
-    @Column(nullable = true, length = 50)
+    @Column(nullable = false, length = 512)
     private String name;
 
     public String getName() {
@@ -57,28 +49,12 @@ public class Track {
         this.artist = artist;
     }
 
-    public Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
-
     public TrackEnum getTrackType() {
         return trackType;
     }
 
     public void setTrackType(TrackEnum trackType) {
         this.trackType = trackType;
-    }
-
-    public Set<Played> getPlayed() {
-        return played;
-    }
-
-    public void setPlayed(Set<Played> played) {
-        this.played = played;
     }
 
     public Set<TrackOfPlaylist> getTrackOfPlaylists() {

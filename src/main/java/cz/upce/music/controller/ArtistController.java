@@ -1,88 +1,73 @@
 package cz.upce.music.controller;
 
-import cz.upce.music.dto.AddOrEditArtistDto;
+import cz.upce.music.dto.ArtistDto;
 import cz.upce.music.entity.Artist;
-import cz.upce.music.repository.AlbumRepository;
-import cz.upce.music.repository.ArtistRepository;
-import cz.upce.music.repository.TrackRepository;
-import cz.upce.music.service.FileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import cz.upce.music.service.implementations.ArtistServiceImpl;
+import cz.upce.music.service.interfaces.ArtistService;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.List;
 
-@Controller
+@RestController
 public class ArtistController {
-    @Autowired
-    private ArtistRepository artistRepository;
 
-    @Autowired
-    private TrackRepository trackRepository;
+    private final ModelMapper mapper;
 
-    @Autowired
-    private AlbumRepository albumRepository;
+    private final ArtistService artistService;
 
-    @Autowired
-    private FileService fileService;
+    public ArtistController(ModelMapper modelMapper, ArtistServiceImpl artistService) {
+        this.mapper = modelMapper;
+        this.artistService = artistService;
+    }
 
     @GetMapping("/artists")
-    public String showAllArtists(Model model) {
-        model.addAttribute("artists", artistRepository.findAll());
-        return "artists";
+    public ResponseEntity<?> getAllArtists() {
+        List<Artist> artists = artistService.getAll();
+        return ResponseEntity.ok(mapper.map(artists, new TypeToken<List<ArtistDto>>(){}.getType()));
     }
 
-    @GetMapping("/artist-detail/{id}")
-    public String showArtistDetail(@PathVariable(required = false) Long id, Model model) {
-        model.addAttribute("artist", artistRepository.findById(id).get());
-        model.addAttribute("artistsAlbums", albumRepository.findAllByArtist_Id(id));
-        model.addAttribute("singles", trackRepository.findTracksByArtist_Id(id));
-        return "artist-detail";
+    @GetMapping("/artists/{id}")
+    public ResponseEntity<?> getArtistDetail(@PathVariable Long id) {
+        ArtistDto artistDto = artistService.getArtistDetail(id);
+        return ResponseEntity.ok(artistDto);
     }
 
-    @GetMapping(value = {"/artist-form", "/artist-form/{id}"})
-    public String showArtistForm(@PathVariable(required = false) Long id, Model model) {
-        if (id != null) {
-            Artist byId = artistRepository.findById(id).orElse(new Artist());
-
-            AddOrEditArtistDto dto = new AddOrEditArtistDto();
-            dto.setMembersCount(byId.getMembersCount());
-            dto.setNationality(byId.getNationality());
-            dto.setName(byId.getName());
-
-            model.addAttribute("artist", dto);
-        } else {
-            model.addAttribute("artist", new AddOrEditArtistDto());
-        }
-        return "artist-form";
-    }
-
-    @PostMapping("/artist-form-process")
-    public String trackFormProcess(AddOrEditArtistDto addArtistDto) {
-        Artist artist = new Artist();
-        artist.setId(addArtistDto.getId());
-        artist.setName(addArtistDto.getName());
+    @Transactional
+    @DeleteMapping(path = "/artists/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> removeArtist(@PathVariable Long id) {
         try {
-            artist.setBirthDate(new SimpleDateFormat("dd/MM/yyyy").parse(addArtistDto.getBirthDate()));
-        }
-        catch (ParseException parseException) {
-            artist.setBirthDate(null);
-        }
-        artist.setNationality(addArtistDto.getNationality());
-        artist.setMembersCount(addArtistDto.getMembersCount());
-        String imagePath = fileService.uploadImage(addArtistDto.getImage());
-        if (imagePath.isEmpty() == false) {
-            artist.setPathToImage(imagePath);
-        }
-        else {
-            artist.setPathToImage(fileService.getDefaultArtistImagePath());
-        }
 
-        artistRepository.save(artist);
-        return "redirect:/artists";
+            Artist artistToRemove = artistService.delete(id);
+            return ResponseEntity.ok(mapper.map(artistToRemove, ArtistDto.class));
+
+        }
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/artists", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> createArtist(@RequestParam(required = false) MultipartFile file, @RequestParam String name, @RequestParam String nationality) {
+
+        try {
+
+            Artist newArtist = artistService.create(name, nationality, file);
+            return ResponseEntity.ok(mapper.map(newArtist, ArtistDto.class));
+
+        }
+        catch (IOException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error while creating an artist.");
+        }
     }
 }
