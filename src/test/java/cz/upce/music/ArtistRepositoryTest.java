@@ -5,7 +5,10 @@ import java.util.List;
 import cz.upce.music.dataFactory.ArtistTestDataFactory;
 import cz.upce.music.entity.Artist;
 import cz.upce.music.repository.ArtistRepository;
+import cz.upce.music.repository.TrackOfPlaylistRepository;
+import cz.upce.music.repository.TrackRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,19 @@ class ArtistRepositoryTest {
 
     @Autowired
     private ArtistTestDataFactory artistTestDataFactory;
+
+    @Autowired
+    private TrackOfPlaylistRepository trackOfPlaylistRepository;
+
+    @Autowired
+    private TrackRepository trackRepository;
+
+    @BeforeEach
+    void deleteAll() {
+        trackOfPlaylistRepository.deleteAll();
+        trackRepository.deleteAll();
+        artistRepository.deleteAll();
+    }
 
     @Test
     void saveArtistTest() {

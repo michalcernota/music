@@ -4,6 +4,7 @@ import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,16 @@ class MusicApplicationTests {
 
     @Autowired
     private UsersPlaylistsRepository usersPlaylistsRepository;
+
+    @BeforeEach
+    void removeAll() {
+        trackOfPlaylistRepository.deleteAll();
+        trackRepository.deleteAll();
+        artistRepository.deleteAll();
+        usersPlaylistsRepository.deleteAll();
+        playlistRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     void saveArtistTest() {
@@ -154,7 +165,7 @@ class MusicApplicationTests {
     @Test
     public void playlistTest() {
         User user  = new User();
-        user.setUsername("michal");
+        user.setUsername("userx");
         user.setPassword("heslo");
         user.setRegistrationDate(LocalDateTime.now());
 
@@ -185,7 +196,7 @@ class MusicApplicationTests {
         trackOfPlaylistRepository.save(trackOfPlaylist);
         usersPlaylistsRepository.save(usersPlaylist);
 
-        Assert.assertEquals(2, userRepository.findAll().size());
+        Assert.assertEquals(1, userRepository.findAll().size());
         Assert.assertEquals(1, trackRepository.findAll().size());
         Assert.assertEquals(1, playlistRepository.findAll().size());
         Assert.assertEquals(1, trackOfPlaylistRepository.findAll().size());
@@ -197,7 +208,7 @@ class MusicApplicationTests {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
         User user = new User();
-        user.setUsername("user");
+        user.setUsername("userx");
         user.setPassword(bCryptPasswordEncoder.encode("password"));
 
         userRepository.save(user);
@@ -205,7 +216,7 @@ class MusicApplicationTests {
         String anotherPassword = "password";
         String anotherPasswordEncoded = bCryptPasswordEncoder.encode(anotherPassword);
 
-        boolean matches = bCryptPasswordEncoder.matches(userRepository.findUserByUsername("user").getPassword(), anotherPasswordEncoded);
+        boolean matches = bCryptPasswordEncoder.matches(userRepository.findUserByUsername("userx").getPassword(), anotherPasswordEncoded);
 
         Assertions.assertThat(matches);
     }
@@ -236,7 +247,7 @@ class MusicApplicationTests {
         trackRepository.save(trackThree);
 
         User user = new User();
-        user.setUsername("user");
+        user.setUsername("userx");
         user.setPassword("user");
         userRepository.save(user);
 
