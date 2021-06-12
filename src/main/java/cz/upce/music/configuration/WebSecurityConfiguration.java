@@ -61,7 +61,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/tracks").permitAll()
                 .antMatchers(HttpMethod.POST, "/signup").permitAll()
                 .antMatchers(HttpMethod.GET, "/images/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/tracks/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/media/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/upload").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // all other requests need to be authenticated

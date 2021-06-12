@@ -10,13 +10,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ResourceTrackConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/tracks/**")
-            .addResourceLocations("file:C:\\Users\\michc\\IdeaProjects\\music\\tracks\\");
+        registry.addResourceHandler("/media/**")
+            .addResourceLocations("file:media/");
 
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:C:/Users/michc/IdeaProjects/music/images/");
+                .addResourceLocations("file:images/");
 
         registry.addResourceHandler("/images/default/**")
-                .addResourceLocations("file:C:/Users/michc/IdeaProjects/music/images/default/");
+                .addResourceLocations("file:images/default/");
     }
 }

@@ -25,7 +25,7 @@ public class FileServiceImpl implements FileService {
             }
         }
         else if (fileType == FileType.TRACK) {
-            destination = "tracks/" + new Date().getTime() + ".mp3";
+            destination = "media/" + new Date().getTime() + ".mp3";
             file.transferTo(Paths.get(destination));
         }
 
@@ -44,7 +44,7 @@ public class FileServiceImpl implements FileService {
             relativeFilePath = "images/" + fileName;
         }
         else if (fileType == FileType.TRACK) {
-            relativeFilePath = "tracks/" + fileName;
+            relativeFilePath = "media/" + fileName;
         }
 
         File file = new File(relativeFilePath);

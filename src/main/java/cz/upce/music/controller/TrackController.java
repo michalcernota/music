@@ -37,7 +37,7 @@ public class TrackController {
         }
     }
 
-    @PostMapping(path = "/tracks/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/tracks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createTrack(@RequestParam MultipartFile[] files, @RequestParam Long artistId) {
         try {
             List<TrackDto> newTracks = trackService.create(files, artistId);
