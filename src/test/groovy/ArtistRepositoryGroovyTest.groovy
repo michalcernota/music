@@ -2,9 +2,13 @@ package cz.upce.music
 
 import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Artist
+import cz.upce.music.repository.ArtistRepository
+import cz.upce.music.repository.TrackOfPlaylistRepository
+import cz.upce.music.repository.TrackRepository
 import cz.upce.music.service.implementations.ArtistServiceImpl
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.runner.RunWith
@@ -23,27 +27,32 @@ import org.springframework.test.context.junit4.SpringRunner
 class ArtistRepositoryGroovyTest {
 
     @Autowired
-    private ArtistServiceImpl artistService;
+    private ArtistRepository artistRepository;
+
+    @Autowired
+    private TrackRepository trackRepository;
+
+    @Autowired
+    private TrackOfPlaylistRepository trackOfPlaylistRepository;
 
     @Autowired
     private Creator creator;
 
-    @BeforeAll
+    @BeforeEach
     void deleteArtists() {
-        List<Artist> artists = artistService.findAll();
-        for (Artist artist : artists) {
-            artistService.delete(artist);
-        }
+        trackOfPlaylistRepository.deleteAll();
+        trackRepository.deleteAll();
+        artistRepository.deleteAll();
     }
 
     @Test
     void saveArtistTest() {
         Artist testArtist = new Artist(name: "MyArtist");
         creator.save(testArtist);
-        List<Artist> all = artistService.findAll();
+        List<Artist> all = artistRepository.findAll();
         Assertions.assertThat(all.size()).isEqualTo(1);
 
-        Artist fromDb = artistService.findById(testArtist.getId()).get();
+        Artist fromDb = artistRepository.findById(testArtist.getId()).get();
         Assertions.assertThat(fromDb.getName()).isEqualTo("MyArtist");
         Assertions.assertThat(fromDb.getPathToImage()).isEqualTo("Test pathToImage");
 

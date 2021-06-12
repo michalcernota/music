@@ -3,6 +3,7 @@ package cz.upce.music
 
 import cz.upce.music.dataFactory.Creator
 import cz.upce.music.entity.Track
+import cz.upce.music.repository.TrackOfPlaylistRepository
 import cz.upce.music.repository.TrackRepository
 import cz.upce.music.service.implementations.TrackServiceImpl
 import cz.upce.music.service.interfaces.TrackService
@@ -23,24 +24,25 @@ import org.springframework.test.context.junit4.SpringRunner
 class TrackRepositoryGroovyTest {
 
     @Autowired
-    private TrackService trackService;
+    private TrackRepository trackRepository;
 
     @Autowired
-    private TrackRepository trackRepository;
+    private TrackOfPlaylistRepository trackOfPlaylistRepository;
 
     @Autowired
     private Creator creator;
 
     @BeforeEach
     void deleteAllTracks() {
-        trackService.deleteAllTracks();
+        trackOfPlaylistRepository.deleteAll();
+        trackRepository.deleteAll();
     }
 
     @Test
     void saveTrackTest() {
         Track track = new Track(name: "Track");
         creator.save(track);
-        List<Track> all = trackService.findAll();
+        List<Track> all = trackRepository.findAll();
         Assertions.assertThat(all.size()).isEqualTo(1);
 
         Track fromDb = trackRepository.findById(track.getId()).get();
