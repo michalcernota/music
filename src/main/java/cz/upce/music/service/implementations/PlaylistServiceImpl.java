@@ -117,8 +117,14 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public void removeTrack(TrackOfPlaylistDto trackOfPlaylistDto) {
-        trackOfPlaylistRepository.deleteById(trackOfPlaylistDto.getId());
+    public TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId) {
+        Optional<TrackOfPlaylist> optionalTrackOfPlaylist = trackOfPlaylistRepository.findById(trackOfPlaylistId);
+        if (optionalTrackOfPlaylist.isPresent()) {
+            trackOfPlaylistRepository.deleteById(trackOfPlaylistId);
+            return mapper.map(optionalTrackOfPlaylist.get(), TrackOfPlaylistDto.class);
+        }
+
+        throw new NoSuchElementException("Track of playlist was not found.");
     }
 
 }

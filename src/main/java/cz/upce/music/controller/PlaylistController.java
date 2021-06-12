@@ -66,10 +66,15 @@ public class PlaylistController {
         }
     }
 
-    @DeleteMapping("/playlists/tracks")
+    @DeleteMapping("/playlists/tracks/{trackOfPlaylistId}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> removeTrackFromPlaylist(@RequestBody TrackOfPlaylistDto trackOfPlaylistDto) throws Exception {
-        playlistService.removeTrack(trackOfPlaylistDto);
-        return ResponseEntity.ok(trackOfPlaylistDto);
+    public ResponseEntity<?> removeTrackFromPlaylist(@PathVariable Long trackOfPlaylistId) {
+        try {
+            TrackOfPlaylistDto trackOfPlaylistDto = playlistService.removeTrack(trackOfPlaylistId);
+            return ResponseEntity.ok(trackOfPlaylistDto);
+        }
+        catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
     }
 }

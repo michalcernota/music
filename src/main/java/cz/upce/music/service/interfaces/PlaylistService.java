@@ -17,6 +17,6 @@ public interface PlaylistService {
 
     TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto);
 
-    void removeTrack(TrackOfPlaylistDto trackOfPlaylistDto);
+    TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId);
 
 }
