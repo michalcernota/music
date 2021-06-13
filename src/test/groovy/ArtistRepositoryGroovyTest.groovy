@@ -5,9 +5,7 @@ import cz.upce.music.entity.Artist
 import cz.upce.music.repository.ArtistRepository
 import cz.upce.music.repository.TrackOfPlaylistRepository
 import cz.upce.music.repository.TrackRepository
-import cz.upce.music.service.implementations.ArtistServiceImpl
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
