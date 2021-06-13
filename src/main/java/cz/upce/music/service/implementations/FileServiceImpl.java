@@ -1,6 +1,7 @@
 package cz.upce.music.service.implementations;
 
 import cz.upce.music.service.interfaces.FileService;
+import org.apache.tomcat.util.http.fileupload.util.mime.MimeUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
