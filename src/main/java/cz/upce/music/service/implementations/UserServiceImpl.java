@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SignUpUserDto signUpUser(SignUpUserDto signUpUserDto) throws Exception {
+    public SignUpUserDto signUpUser(SignUpUserDto signUpUserDto) {
         if (userRepository.findUserByUsername(signUpUserDto.getUsername()) == null) {
             if (!signUpUserDto.getPassword().equals(signUpUserDto.getRepeatPassword())) {
                 throw new SecurityException("Passwords does not match.");
