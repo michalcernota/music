@@ -2,7 +2,7 @@ package cz.upce.music;
 
 import cz.upce.music.dataFactory.Creator;
 import cz.upce.music.dto.PlaylistDto;
-import cz.upce.music.entity.User;
+import cz.upce.music.entity.Users;
 import cz.upce.music.service.interfaces.PlaylistService;
 import cz.upce.music.service.interfaces.UserService;
 import org.assertj.core.api.Assertions;
@@ -31,7 +31,7 @@ public class ServiceTests {
     @Test
     @WithMockUser
     void createUserAndPlaylistTest() {
-        User user = new User();
+        Users user = new Users();
         user.setUsername("my test user");
         user.setPassword("password");
         userService.saveUser(user);

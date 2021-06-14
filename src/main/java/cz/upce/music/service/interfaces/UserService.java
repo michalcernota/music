@@ -1,15 +1,15 @@
 package cz.upce.music.service.interfaces;
 
 import cz.upce.music.dto.SignUpUserDto;
-import cz.upce.music.entity.User;
+import cz.upce.music.entity.Users;
 
 public interface UserService {
 
-    User getLoggedUser();
+    Users getLoggedUser();
 
-    User saveUser(User user);
+    Users saveUser(Users user);
 
     SignUpUserDto signUpUser(SignUpUserDto signUpUserDto) throws Exception;
 
-    User findUserByUsername(String name);
+    Users findUserByUsername(String name);
 }

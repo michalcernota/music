@@ -1,7 +1,7 @@
 package cz.upce.music.service.implementations;
 
 import cz.upce.music.dto.SignUpUserDto;
-import cz.upce.music.entity.User;
+import cz.upce.music.entity.Users;
 import cz.upce.music.entity.UserRoleEnum;
 import cz.upce.music.repository.UserRepository;
 import cz.upce.music.service.interfaces.UserService;
@@ -32,13 +32,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getLoggedUser() {
+    public Users getLoggedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findUserByUsername(authentication.getName());
     }
 
     @Override
-    public User saveUser(User user) {
+    public Users saveUser(Users user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
@@ -52,14 +52,14 @@ public class UserServiceImpl implements UserService {
                 throw new SecurityException("Passwords does not match.");
             }
 
-            User user = new User();
+            Users user = new Users();
             user.setUsername(signUpUserDto.getUsername());
             user.setPassword(signUpUserDto.getPassword());
             user.setUserRole(UserRoleEnum.ROLE_USER);
             user.setEmailAddress(signUpUserDto.getEmailAddress());
             user.setRegistrationDate(LocalDateTime.now());
 
-            User newUser = saveUser(user);
+            Users newUser = saveUser(user);
             return mapper.map(newUser, SignUpUserDto.class);
         }
         else {
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByUsername(String username) {
+    public Users findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

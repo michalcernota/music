@@ -1,7 +1,7 @@
 package cz.upce.music.controller;
 
 import cz.upce.music.dto.SignUpUserDto;
-import cz.upce.music.entity.User;
+import cz.upce.music.entity.Users;
 import cz.upce.music.service.interfaces.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping("/user/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getUserRoles(@PathVariable String username) {
-        User user = userService.findUserByUsername(username);
+        Users user = userService.findUserByUsername(username);
         if (user != null) {
             return ResponseEntity.ok(user.getUserRole());
         } else {

@@ -37,7 +37,7 @@ public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
 
     @Override
     public UsersPlaylistDto addToMyPlaylists(Long playlistId) {
-        User user = userService.getLoggedUser();
+        Users user = userService.getLoggedUser();
 
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
         if (!optionalPlaylist.isPresent() || user == null) {
@@ -55,7 +55,7 @@ public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
 
     @Override
     public List<UsersPlaylistDto> getMyPlaylists() {
-        User user = userService.getLoggedUser();
+        Users user = userService.getLoggedUser();
         List<UsersPlaylist> usersPlaylists = usersPlaylistsRepository.findAllByUser_Id(user.getId());
         return mapper.map(usersPlaylists, new TypeToken<List<UsersPlaylistDto>>(){}.getType());
     }

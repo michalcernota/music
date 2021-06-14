@@ -19,7 +19,7 @@ public class Playlist {
     private Set<TrackOfPlaylist> trackOfPlaylist;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User owner;
+    private Users owner;
 
     public Long getId() {
         return id;
@@ -53,11 +53,11 @@ public class Playlist {
         this.trackOfPlaylist = trackOfPlaylist;
     }
 
-    public User getOwner() {
+    public Users getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(Users owner) {
         this.owner = owner;
     }
 }

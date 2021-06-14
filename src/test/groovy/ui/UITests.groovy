@@ -2,7 +2,7 @@ package ui
 
 import cz.upce.music.MusicApplication
 import cz.upce.music.dataFactory.Creator
-import cz.upce.music.entity.User
+import cz.upce.music.entity.Users
 import cz.upce.music.entity.UserRoleEnum
 import cz.upce.music.repository.ArtistRepository
 import cz.upce.music.repository.TrackRepository
@@ -97,7 +97,7 @@ class UITests {
 
     @Test
     void unsuccessfulUserLoginTest() {
-        creator.saveEntity(new User(username: "tester126", password: passwordEncoder.encode("tester126"), userRole: UserRoleEnum.ROLE_USER));
+        creator.saveEntity(new Users(username: "tester126", password: passwordEncoder.encode("tester126"), userRole: UserRoleEnum.ROLE_USER));
         performLogin("tester126", "wrong-password");
         Assert.assertTrue(driver.findElements(By.xpath("//a[@href='/logout']")).size() == 0);
     }

@@ -53,7 +53,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public PlaylistDto create(PlaylistDto playlistDto) {
-        User owner = userRepository.findByUsername(playlistDto.getOwnerName());
+        Users owner = userRepository.findByUsername(playlistDto.getOwnerName());
 
         Playlist playlist = new Playlist();
         playlist.setId(playlistDto.getId());
@@ -106,7 +106,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     public TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto) throws Exception {
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(trackOfPlaylistDto.getPlaylistId());
         Optional<Track> optionalTrack = trackRepository.findById(trackOfPlaylistDto.getTrackId());
-        User user = userService.getLoggedUser();
+        Users user = userService.getLoggedUser();
 
         if (optionalTrack.isPresent() && optionalPlaylist.isPresent()) {
             if (!user.getId().equals(optionalPlaylist.get().getOwner().getId())) {
@@ -128,7 +128,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId) throws Exception {
         Optional<TrackOfPlaylist> optionalTrackOfPlaylist = trackOfPlaylistRepository.findById(trackOfPlaylistId);
-        User user = userService.getLoggedUser();
+        Users user = userService.getLoggedUser();
         if (optionalTrackOfPlaylist.isPresent()) {
             if (!user.getId().equals(optionalTrackOfPlaylist.get().getPlaylist().getId())) {
                 throw new Exception("Logged user is not owner of this playlist.");

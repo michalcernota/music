@@ -1,23 +1,23 @@
 package cz.upce.music.repository;
 
-import cz.upce.music.entity.User;
+import cz.upce.music.entity.Users;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<Users, Long> {
     @EntityGraph(attributePaths = "usersPlaylists")
-    User findUserByUsername(String username);
+    Users findUserByUsername(String username);
 
     @EntityGraph(attributePaths = "usersPlaylists")
-    User findByUsername(String username);
+    Users findByUsername(String username);
 
     @EntityGraph(attributePaths = "usersPlaylists")
-    User findUserByEmailAddress(String emailAddress);
+    Users findUserByEmailAddress(String emailAddress);
 
     @EntityGraph(attributePaths = "usersPlaylists")
-    @Query("SELECT u from User u where u.username = ?1 or u.emailAddress = ?2")
-    User findUserByUsernameOrEmailAddress(String username, String emailAddress);
+    @Query("SELECT u from Users u where u.username = ?1 or u.emailAddress = ?2")
+    Users findUserByUsernameOrEmailAddress(String username, String emailAddress);
 }

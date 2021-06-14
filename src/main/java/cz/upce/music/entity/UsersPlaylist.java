@@ -10,7 +10,7 @@ public class UsersPlaylist {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    private Users user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Playlist playlist;
@@ -23,11 +23,11 @@ public class UsersPlaylist {
         this.id = id;
     }
 
-    public User getUser() {
+    public Users getUser() {
         return user;
     }
 
-    public void setUser(User users) {
+    public void setUser(Users users) {
         this.user = users;
     }
 

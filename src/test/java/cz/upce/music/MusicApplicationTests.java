@@ -164,7 +164,7 @@ class MusicApplicationTests {
 
     @Test
     public void playlistTest() {
-        User user  = new User();
+        Users user  = new Users();
         user.setUsername("userx");
         user.setPassword("heslo");
         user.setRegistrationDate(LocalDateTime.now());
@@ -207,7 +207,7 @@ class MusicApplicationTests {
     public void passwordEncryptionDecryptionTest() {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        User user = new User();
+        Users user = new Users();
         user.setUsername("userx");
         user.setPassword(bCryptPasswordEncoder.encode("password"));
 
@@ -246,7 +246,7 @@ class MusicApplicationTests {
         trackRepository.save(trackTwo);
         trackRepository.save(trackThree);
 
-        User user = new User();
+        Users user = new Users();
         user.setUsername("userx");
         user.setPassword("user");
         userRepository.save(user);
