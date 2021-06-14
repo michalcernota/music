@@ -33,6 +33,7 @@ public class PlaylistController {
 
     @Transactional
     @DeleteMapping("/playlists/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> deletePlaylist(@PathVariable Long id) {
         try {
             playlistService.delete(id);

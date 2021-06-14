@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 public class UsersPlaylistsController {
 
     private final UsersPlaylistsService usersPlaylistsService;
@@ -22,6 +21,7 @@ public class UsersPlaylistsController {
     }
 
     @PostMapping("/user/playlists/{playlistId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> addToMyPlaylists(@PathVariable Long playlistId) {
         try {
             UsersPlaylistDto usersPlaylist = usersPlaylistsService.addToMyPlaylists(playlistId);
@@ -33,6 +33,7 @@ public class UsersPlaylistsController {
     }
 
     @GetMapping("/user/playlists")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getMyPlaylists() {
         List<UsersPlaylistDto> usersPlaylistDtoList = usersPlaylistsService.getMyPlaylists();
         return ResponseEntity.ok(usersPlaylistDtoList);
@@ -40,6 +41,7 @@ public class UsersPlaylistsController {
 
     @Transactional
     @DeleteMapping("/user/playlists/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> removeFromMyPlaylists(@PathVariable Long id) {
         try {
             UsersPlaylistDto usersPlaylistDto = usersPlaylistsService.removeFromMyPlaylists(id);
@@ -51,6 +53,7 @@ public class UsersPlaylistsController {
     }
 
     @GetMapping("/user/playlists/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> getTracks(@PathVariable Long id) {
         List<TrackDto> tracks = usersPlaylistsService.getTracksOfPlaylist(id);
         if (tracks != null) {

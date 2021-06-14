@@ -5,6 +5,7 @@ import cz.upce.music.dto.TrackOfPlaylistDto;
 import cz.upce.music.entity.*;
 import cz.upce.music.repository.*;
 import cz.upce.music.service.interfaces.PlaylistService;
+import cz.upce.music.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private final UserRepository userRepository;
 
+    private final UserService userService;
+
     private final UsersPlaylistsRepository usersPlaylistsRepository;
 
     private final TrackOfPlaylistRepository trackOfPlaylistRepository;
@@ -27,9 +30,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private final ModelMapper mapper;
 
-    public PlaylistServiceImpl(PlaylistRepository playlistRepository, UserRepository userRepository, UsersPlaylistsRepository usersPlaylistsRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, ModelMapper mapper) {
+    public PlaylistServiceImpl(PlaylistRepository playlistRepository, UserRepository userRepository, UserService userService, UsersPlaylistsRepository usersPlaylistsRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, ModelMapper mapper) {
         this.playlistRepository = playlistRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
         this.usersPlaylistsRepository = usersPlaylistsRepository;
         this.trackOfPlaylistRepository = trackOfPlaylistRepository;
         this.trackRepository = trackRepository;
@@ -99,11 +103,16 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto) {
+    public TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto) throws Exception {
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(trackOfPlaylistDto.getPlaylistId());
         Optional<Track> optionalTrack = trackRepository.findById(trackOfPlaylistDto.getTrackId());
+        User user = userService.getLoggedUser();
 
         if (optionalTrack.isPresent() && optionalPlaylist.isPresent()) {
+            if (!user.getId().equals(optionalPlaylist.get().getOwner().getId())) {
+                throw new Exception("Logged user is not owner of this playlist.");
+            }
+
             TrackOfPlaylist trackOfPlaylist = new TrackOfPlaylist();
             trackOfPlaylist.setPlaylist(optionalPlaylist.get());
             trackOfPlaylist.setTrack(optionalTrack.get());
@@ -117,9 +126,14 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId) {
+    public TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId) throws Exception {
         Optional<TrackOfPlaylist> optionalTrackOfPlaylist = trackOfPlaylistRepository.findById(trackOfPlaylistId);
+        User user = userService.getLoggedUser();
         if (optionalTrackOfPlaylist.isPresent()) {
+            if (!user.getId().equals(optionalTrackOfPlaylist.get().getPlaylist().getId())) {
+                throw new Exception("Logged user is not owner of this playlist.");
+            }
+
             trackOfPlaylistRepository.deleteById(trackOfPlaylistId);
             return mapper.map(optionalTrackOfPlaylist.get(), TrackOfPlaylistDto.class);
         }

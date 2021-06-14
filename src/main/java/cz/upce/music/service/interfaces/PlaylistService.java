@@ -15,8 +15,8 @@ public interface PlaylistService {
 
     PlaylistDto getPlaylistDetail(Long id);
 
-    TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto);
+    TrackOfPlaylistDto addTrackToPlaylist(TrackOfPlaylistDto trackOfPlaylistDto) throws Exception;
 
-    TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId);
+    TrackOfPlaylistDto removeTrack(Long trackOfPlaylistId) throws Exception;
 
 }

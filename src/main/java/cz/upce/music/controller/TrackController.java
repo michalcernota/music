@@ -5,6 +5,7 @@ import cz.upce.music.service.interfaces.TrackService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class TrackController {
 
     @Transactional
     @DeleteMapping("/tracks/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteTrack(@PathVariable Long id) {
         try {
             TrackDto deletedTrack = trackService.deleteTrackAndFile(id);
@@ -38,6 +40,7 @@ public class TrackController {
     }
 
     @PostMapping(path = "/tracks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> createTrack(@RequestParam MultipartFile[] files, @RequestParam Long artistId) {
         try {
             List<TrackDto> newTracks = trackService.create(files, artistId);
