@@ -55,12 +55,18 @@ class UITests {
     static void setupWebdriverChromeDriver() {
         String chromeDriverPath = UITests.class.getResource("/chromedriver.exe").getFile();
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+
+        String circleCiChromeDriverPath = "usr/local/bin/chromedriver";
+        if (new File(circleCiChromeDriverPath)) {
+            System.setProperty("webdriver.chrome.driver", circleCiChromeDriverPath);
+        }
     }
 
     @BeforeEach
     void setup() {
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setHeadless(false);
+        chromeOptions.setHeadless(true);
+
         driver = new ChromeDriver(chromeOptions);
         wait = new WebDriverWait(driver, 5);
     }
