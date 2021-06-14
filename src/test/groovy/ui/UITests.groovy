@@ -57,7 +57,7 @@ class UITests {
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 
         String circleCiChromeDriverPath = "usr/local/bin/chromedriver";
-        if (new File(circleCiChromeDriverPath)) {
+        if (new File(circleCiChromeDriverPath).exists()) {
             System.setProperty("webdriver.chrome.driver", circleCiChromeDriverPath);
         }
     }
