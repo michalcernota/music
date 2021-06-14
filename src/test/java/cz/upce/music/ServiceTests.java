@@ -2,12 +2,9 @@ package cz.upce.music;
 
 import cz.upce.music.dataFactory.Creator;
 import cz.upce.music.dto.PlaylistDto;
-import cz.upce.music.entity.Track;
 import cz.upce.music.entity.User;
 import cz.upce.music.service.interfaces.PlaylistService;
-import cz.upce.music.service.interfaces.TrackService;
 import cz.upce.music.service.interfaces.UserService;
-import cz.upce.music.service.interfaces.UsersPlaylistsService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +26,7 @@ public class ServiceTests {
     private UserService userService;
 
     @Autowired
-    private UsersPlaylistsService usersPlaylistsService;
-
-    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private Creator creator;
 
     @Test
     @WithMockUser
