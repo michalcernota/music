@@ -2,10 +2,12 @@
 
 
 ##Popis aplikace
+
 Aplikace umožnňuje uživatelům vytvářet hudební playlisty a sdílet je mezi sebou.
 
 
 ##Poznámky k funkčnosti aplikace
+
 Každý playlist má právě jednoho vlatníka, který může jeho playlist modifikovat (přidávat a odebárat skladby).
 Uživatelé, kteří si tento playlist takzvaně "přidají", pak tento odebírají - nemohou ho však modifikovat.
 </br>
@@ -61,6 +63,8 @@ REST API je ve vývojovém režimu dostupné na adrese [http://localhost:8080](h
 ## Databázový model
 ![model](docs/diagram.png)
 
-## Nasazená aplikace
+## Adresy
 
-Aplikace je nasazena na webu heroku. Pro frontend i backend je použit heroku.
+[Github](https://github.com/michalcernota/music)
+
+[Produkce](https://music-share-nnpia-be.herokuapp.com/)
