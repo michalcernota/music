@@ -3,7 +3,7 @@ package cz.upce.music.service.implementations;
 import cz.upce.music.dto.SignUpUserDto;
 import cz.upce.music.entity.Users;
 import cz.upce.music.entity.UserRoleEnum;
-import cz.upce.music.repository.UserRepository;
+import cz.upce.music.repository.UsersRepository;
 import cz.upce.music.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
@@ -19,13 +19,13 @@ import java.time.LocalDateTime;
 @SessionScope
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final ModelMapper mapper;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+    public UserServiceImpl(UsersRepository userRepository, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapper = modelMapper;

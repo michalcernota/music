@@ -18,7 +18,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private final PlaylistRepository playlistRepository;
 
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
 
     private final UserService userService;
 
@@ -30,7 +30,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private final ModelMapper mapper;
 
-    public PlaylistServiceImpl(PlaylistRepository playlistRepository, UserRepository userRepository, UserService userService, UsersPlaylistsRepository usersPlaylistsRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, ModelMapper mapper) {
+    public PlaylistServiceImpl(PlaylistRepository playlistRepository, UsersRepository userRepository, UserService userService, UsersPlaylistsRepository usersPlaylistsRepository, TrackOfPlaylistRepository trackOfPlaylistRepository, TrackRepository trackRepository, ModelMapper mapper) {
         this.playlistRepository = playlistRepository;
         this.userRepository = userRepository;
         this.userService = userService;

@@ -6,7 +6,7 @@ import cz.upce.music.entity.Users
 import cz.upce.music.entity.UserRoleEnum
 import cz.upce.music.repository.ArtistRepository
 import cz.upce.music.repository.TrackRepository
-import cz.upce.music.repository.UserRepository
+import cz.upce.music.repository.UsersRepository
 import org.assertj.core.api.Assertions
 import org.junit.Assert
 import org.junit.jupiter.api.AfterEach
@@ -36,7 +36,7 @@ class UITests {
     private Creator creator;
 
     @Autowired
-    private UserRepository userRepository;
+    private UsersRepository userRepository;
 
     @Autowired
     private ArtistRepository artistRepository;

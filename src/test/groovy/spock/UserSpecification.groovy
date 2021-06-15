@@ -1,7 +1,7 @@
 package spock
 
 import cz.upce.music.entity.Users
-import cz.upce.music.repository.UserRepository
+import cz.upce.music.repository.UsersRepository
 import cz.upce.music.service.interfaces.UserService
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,7 +17,7 @@ class UserSpecification extends Specification {
         given:
         def user = new Users(username: "user", password: "password")
         UserService userService = Mock()
-        UserRepository userRepository = Mock()
+        UsersRepository userRepository = Mock()
 
         userRepository.findUserByUsername(_ as String) >> { args ->
             String userName = args[0]

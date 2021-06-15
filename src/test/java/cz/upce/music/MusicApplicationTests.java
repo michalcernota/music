@@ -36,7 +36,7 @@ class MusicApplicationTests {
     private PlaylistRepository playlistRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UsersRepository userRepository;
 
     @Autowired
     private UsersPlaylistsRepository usersPlaylistsRepository;

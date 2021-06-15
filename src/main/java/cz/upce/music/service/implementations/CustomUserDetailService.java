@@ -1,7 +1,7 @@
 package cz.upce.music.service.implementations;
 
 import cz.upce.music.entity.Users;
-import cz.upce.music.repository.UserRepository;
+import cz.upce.music.repository.UsersRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,9 +13,9 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
 
-    public CustomUserDetailService(UserRepository userRepository) {
+    public CustomUserDetailService(UsersRepository userRepository) {
         this.userRepository = userRepository;
     }
 
