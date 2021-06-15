@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class UITests {
 
-    private String address = "http://localhost:3000";
+    private String address = "https://music-share-nnpia.herokuapp.com/";
 
     @Autowired
     private Creator creator;
@@ -68,7 +68,7 @@ class UITests {
         chromeOptions.setHeadless(true);
 
         driver = new ChromeDriver(chromeOptions);
-        wait = new WebDriverWait(driver, 5);
+        wait = new WebDriverWait(driver, 60);
     }
 
     @AfterEach
