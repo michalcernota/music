@@ -56,7 +56,7 @@ class MockMvcArtistsTest {
             }
         }
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/artists/add")
+        mockMvc.perform(MockMvcRequestBuilders.post("/artists")
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .principal(principal)
                 .param("name", "one")
