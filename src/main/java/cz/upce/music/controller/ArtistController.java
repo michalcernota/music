@@ -2,9 +2,6 @@ package cz.upce.music.controller;
 
 import cz.upce.music.dto.ArtistDto;
 import cz.upce.music.entity.Artist;
-import cz.upce.music.entity.UserRoleEnum;
-import cz.upce.music.entity.Users;
-import cz.upce.music.repository.UsersRepository;
 import cz.upce.music.service.implementations.ArtistServiceImpl;
 import cz.upce.music.service.interfaces.ArtistService;
 import org.modelmapper.ModelMapper;
@@ -27,22 +24,13 @@ public class ArtistController {
 
     private final ArtistService artistService;
 
-    private final UsersRepository usersRepository;
-
-    public ArtistController(ModelMapper modelMapper, ArtistServiceImpl artistService, UsersRepository usersRepository) {
+    public ArtistController(ModelMapper modelMapper, ArtistServiceImpl artistService) {
         this.mapper = modelMapper;
         this.artistService = artistService;
-        this.usersRepository = usersRepository;
     }
 
     @GetMapping("/artists")
     public ResponseEntity<?> getAllArtists() {
-        Users user = new Users();
-        user.setUsername("admin");
-        user.setPassword("$2a$10$PWs9jCQNvpo0DDK6./YP1.JxQxnTgiXsroKsZ6tDGzkWdWTSP9VJu");
-        user.setUserRole(UserRoleEnum.ROLE_ADMIN);
-        usersRepository.save(user);
-
         List<Artist> artists = artistService.getAll();
         return ResponseEntity.ok(mapper.map(artists, new TypeToken<List<ArtistDto>>(){}.getType()));
     }
