@@ -1,10 +1,8 @@
 # NNPIA Semestrální práce
 
-
 ##Popis aplikace
 
 Aplikace umožnňuje uživatelům vytvářet hudební playlisty a sdílet je mezi sebou.
-
 
 ##Poznámky k funkčnosti aplikace
 
@@ -12,7 +10,6 @@ Každý playlist má právě jednoho vlatníka, který může jeho playlist modi
 Uživatelé, kteří si tento playlist takzvaně "přidají", pak tento odebírají - nemohou ho však modifikovat.
 </br>
 Přidávat umělce a skladby (mp3 soubory) do aplikace může pouze uživatel s oprávněním admin.
-
 
 ##Popis API
 * Artists
