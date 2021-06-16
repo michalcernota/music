@@ -65,7 +65,7 @@ class UITests {
     @BeforeEach
     void setup() {
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setHeadless(true);
+        chromeOptions.setHeadless(false);
 
         driver = new ChromeDriver(chromeOptions);
         wait = new WebDriverWait(driver, 60);
@@ -90,7 +90,7 @@ class UITests {
 
     @Test
     void successfulAdminLoginTest() {
-        performLogin("admin", "admin");
+        performLogin("admin", "adminadmin");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/logout']")));
         Assert.assertTrue(driver.findElement(By.xpath("//a[@href='/logout']")) != null);
     }
