@@ -49,8 +49,9 @@ public class UsersPlaylistServiceImpl implements UsersPlaylistsService {
         UsersPlaylist usersPlaylist = new UsersPlaylist();
         usersPlaylist.setUser(user);
         usersPlaylist.setPlaylist(playlist);
+        UsersPlaylist saved = usersPlaylistsRepository.save(usersPlaylist);
 
-        return mapper.map(usersPlaylistsRepository.save(usersPlaylist), UsersPlaylistDto.class);
+        return mapper.map(saved, UsersPlaylistDto.class);
     }
 
     @Override

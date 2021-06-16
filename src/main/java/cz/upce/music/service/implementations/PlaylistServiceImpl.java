@@ -130,7 +130,12 @@ public class PlaylistServiceImpl implements PlaylistService {
         Optional<TrackOfPlaylist> optionalTrackOfPlaylist = trackOfPlaylistRepository.findById(trackOfPlaylistId);
         Users user = userService.getLoggedUser();
         if (optionalTrackOfPlaylist.isPresent()) {
-            if (!user.getId().equals(optionalTrackOfPlaylist.get().getPlaylist().getId())) {
+            Optional<Playlist> optionalPlaylist = playlistRepository.findById(optionalTrackOfPlaylist.get().getPlaylist().getId());
+            if (!optionalPlaylist.isPresent()) {
+                throw new Exception("Playlist was not found.");
+            }
+
+            if (!user.getId().equals(optionalPlaylist.get().getOwner().getId())) {
                 throw new Exception("Logged user is not owner of this playlist.");
             }
 
