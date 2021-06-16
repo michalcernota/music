@@ -65,7 +65,7 @@ class UITests {
     @BeforeEach
     void setup() {
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setHeadless(false);
+        chromeOptions.setHeadless(true);
 
         driver = new ChromeDriver(chromeOptions);
         wait = new WebDriverWait(driver, 60);
